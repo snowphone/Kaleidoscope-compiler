@@ -1,7 +1,14 @@
 %{
+extern int lines;
 #include <stdio.h>
+
+int yylex(void);
+void yyerror(char* s) {
+	fprintf(stderr, "FAIL!\nERROR: %d - %s\n", lines, s);
+}
 %}
-%token DEF EXTERN COMMENT NUMBER ID '(' ')' ',' ';' END
+%token DEF EXTERN COMMENT NUMBER ID '(' ')' ',' ';'
+%token END 0
 %left '+' '-'
 %left '*'
 %start program
@@ -63,4 +70,10 @@ external : EXTERN prototype
 		;
 %%
 
+int main(void) {
+	int result = yyparse();
+	if(result == 0) {
+		puts("PASS!");
+	} 
+}
 
