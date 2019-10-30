@@ -2,58 +2,42 @@
  * ID: 		B611062
  */
 /* Rules */
-identifier	[a-z][a-z0-9]*
+id			[a-z][a-z0-9]*
 number		"."?[0-9]+|[0-9]+"."[0-9]*
-keyword		"def"|"extern"
-operator	[-+*]
-punctuation "("|")"|","|";"
 comment		"#".*
 %{
 int lines = 1;
-
-enum TOKEN_TYPES {
-	def = 256,
-	ext,
-	comment,
-	number,
-	identifier,
-	plus = '+',
-	minus = '-',
-	mul = '*',
-	lparan = '(',
-	rparan = ')',
-	colon = ',',
-	semicolon = ';',
-};
+#include "y.tab.h"
 %}
 %%
 \n				++lines;
-def 			return def;
-extern 			return ext;
-{identifier}	return identifier;
-{number}		return number;
-{comment}		return comment;
-"+"				return plus;
-"-"				return minus;
-"*"				return mul;
-"("				return lparan;
-")"				return rparan;
-","				return colon;
-";"				return semicolon;
+def 			return DEF;
+extern 			return EXTERN;
+{id}			return ID;
+{number}		return NUMBER;
+{comment}		/* Comment */
+"+"				return '+';
+"-"				return '-';
+"*"				return '*';
+"("				return '(';
+")"				return ')';
+","				return ',';
+";"				return ';';
 [ \r\t]			/* White space */
-<<EOF>>			return EOF;
+<<EOF>>			return END;
 %%
+#ifdef ENABLE_SCANNER_MAIN
 int main(int argc, char* argv[]) {
 	int type;
-	while((type = yylex()) != EOF) {
+	while((type = yylex()) != END) {
 		switch(type) {
-			case identifier:
-				printf("%d\t%s\n", identifier, yytext);
+			case ID:
+				printf("%d\t%s\n", ID, yytext);
 				break;
-			case number:
-				printf("%d\t%s\n", number, yytext);
+			case NUMBER:
+				printf("%d\t%s\n", NUMBER, yytext);
 				break;
-			case comment:
+			case COMMENT:
 				printf("comment\t%d\n", lines);
 				break;
 			default:
@@ -62,3 +46,4 @@ int main(int argc, char* argv[]) {
 		}
 	}
 }
+#endif

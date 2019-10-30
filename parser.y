@@ -1,10 +1,13 @@
-%token DEF EXT COMMENT NUMBER ID '(' ')' ',' ';' EOF
+%{
+#include <stdio.h>
+%}
+%token DEF EXTERN COMMENT NUMBER ID '(' ')' ',' ';' END
 %left '+' '-'
 %left '*'
 %start program
 %%
 
-program : topList EOF
+program : topList END
 		;
 
 topList : top ';'
@@ -56,7 +59,7 @@ expressionList : expression
 			|  expressionList ',' expression
 			;
 
-external : EXT prototype
+external : EXTERN prototype
 		;
 %%
 
