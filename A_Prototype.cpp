@@ -1,19 +1,21 @@
-#include <typeinfo>
 #include "A_Prototype.h"
+#include <typeinfo>
+#include <iostream>
+
+using std::cout;	using std::endl;
 
 void A_Prototype::Print(int d)
 {
-	int i, Size = paramList.size();
 	indent(d);
-	cout<<"prototype"<<endl;
+	cout << "prototype" << endl;
 	ident.Print(d+2);
 
-	if(Size > 0){
+	if(!paramList.empty()){
 		indent(d+2);
-		cout<<"identifierList"<<endl;
-		for(i=0 ; i<Size ; i++){
-			A_Top& a = /*채워넣기*/;
-			a.Print(d+4);
+		cout << "identifierList" << endl;
+		for(A_TopList::iterator it = paramList.begin(); it != paramList.end(); ++it) {
+			A_Top* a = dynamic_cast<A_Top*>(*it);
+			a->Print(d+4);
 		}
 	}
 }
