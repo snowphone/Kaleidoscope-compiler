@@ -45,7 +45,7 @@ expression : numberExpr
 		|  binaryExpr
 		|  callExpr
 		|  '(' expression ')'
-		|
+		;
 
 numberExpr : NUMBER
 		;
