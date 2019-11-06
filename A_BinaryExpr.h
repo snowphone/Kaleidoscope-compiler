@@ -1,16 +1,11 @@
 #pragma once
 
 #include "A_Expr.h"
-using namespace std;
-
-typedef std::vector<A_Top*>		A_TopList;
-
-extern A_TopList *aroot;
 
 // A_BinaryExpr - Expr class for a binary operator.
 class A_BinaryExpr : public A_Expr {
 private:
-	char		oper;
+	char	oper;
 	A_Expr&	left;
 	A_Expr& right;
 
