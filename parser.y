@@ -1,72 +1,116 @@
 %{
 extern int lines;
-#include <stdio.h>
+
+#include <iostream>
+#include <vector>
+#include <string>
+
+#include "A_Top.h"
+#include "A_Definition.h"
+#include "A_Prototype.h"
+#include "A_Identifier.h"
+#include "A_External.h"
+#include "A_NumberExpr.h"
+#include "A_VariableExpr.h"
+#include "A_BinaryExpr.h"
+#include "A_CallExpr.h"
+
+#include "y.tab.h"
+
+using std::cerr;	using std::endl;
+using std::vector;
+
 
 int yylex(void);
 void yyerror(char* s) {
-	fprintf(stderr, "FAIL!\nERROR: %d - %s\n", lines, s);
+	cerr << "FAIL!" << endl << "ERROR: " << lines << " - " << s << endl;
 }
+
 %}
-%token DEF EXTERN COMMENT NUMBER ID '(' ')' ',' ';'
+
+%union {
+	double num;
+	const char* id;
+	A_External* ext;
+	A_Definition* def;
+	A_Identifier* ident;
+	A_TopList* toplist;
+	A_Top* tp;
+	A_Prototype* proto;
+	A_Expr* exp;
+}
+
+
+%token COMMENT EXTERN DEF '(' ')' ',' ';'
+%token <num> NUMBER 
+%token <id> ID 
+%type <ident> identifier
+%type <def> definition
+%type <ext> external
+%type <exp> expression numberExpr variableExpr binaryExpr callExpr
+%type <toplist> topList identifierList expressionList
+%type <proto> prototype
+%type <tp> top
+
 %token END 0
 %left '+' '-'
 %left '*'
 %start program
 %%
 
-program : topList END
+program : topList END	{ aroot = $1; }
 		;
 
-topList : top ';'
-		| topList top ';'
+topList : top ';'			{ $$ = new A_TopList(1, $1); }
+		| topList top ';'	{ $1->push_back($2); $$ = $1; }
 		;
 
-top	: definition
-	| external
-	| expression
+top	: definition	{ $$ = $1; }
+	| external		{ $$ = $1; }
+	| expression	{ $$ = $1; }
 	;
 
-definition : DEF prototype expression
+definition : DEF prototype expression	{ $$ = new A_Definition($2, $3); }
 		;
 
-prototype : identifier '(' ')'
-		| identifier '(' identifierList ')'
+prototype : identifier '(' ')'				{ $$ = new A_Prototype($1); }
+		| identifier '(' identifierList ')'	{ $$ = new A_Prototype($1, $3); }
 		;
 
-identifier : ID
+identifier : ID		{ $$ = new A_Identifier(std::string($1)); }
 		;
 
-identifierList : identifier
-			|  identifier ',' identifierList
+identifierList : identifier						{ $$ = new A_TopList(1, $1); }
+			|  identifierList ',' identifier	{ $1->push_back($3); $$ = $1; }
 			;
 
-expression : numberExpr
-		|  variableExpr
-		|  binaryExpr
-		|  callExpr
-		|  '(' expression ')'
+expression : numberExpr			{ $$ = $1; }
+		|  variableExpr			{ $$ = $1; }
+		|  binaryExpr			{ $$ = $1; }
+		|  callExpr				{ $$ = $1; }
+		|  '(' expression ')'	{ $$ = $2; }
 		;
 
-numberExpr : NUMBER
+numberExpr : NUMBER	{ $$ = new A_NumberExpr($1); }
 		;
 
-variableExpr : identifier
+variableExpr : identifier	{ $$ = new A_VariableExpr($1); }
 			;
 
-binaryExpr : expression '+' expression
-		|  expression '-' expression
-		|  expression '*' expression
+binaryExpr : expression '+' expression	{ $$ = new A_BinaryExpr('+', $1, $3); }
+		|  expression '-' expression	{ $$ = new A_BinaryExpr('-', $1, $3); }
+		|  expression '*' expression	{ $$ = new A_BinaryExpr('*', $1, $3); }
 		;
 
-callExpr : identifier '(' ')'
-		| identifier '(' expressionList ')'
+callExpr : identifier '(' ')'				{ $$ = new A_CallExpr($1); }
+		| identifier '(' expressionList ')'	{ $$ = new A_CallExpr($1, $3); }
 		;
 
-expressionList : expression
-			|  expressionList ',' expression
+expressionList : expression						{ $$ = new A_TopList(1, $1); }
+			|  expressionList ',' expression	{ $1->push_back($3); $$ = $1; }
 			;
 
-external : EXTERN prototype
+external : EXTERN prototype	{ $$ = new A_External($2); }
 		;
 %%
 
@@ -74,6 +118,9 @@ int main(void) {
 	int result = yyparse();
 	if(result == 0) {
 		puts("PASS!");
+		for(A_TopList::iterator it = aroot->begin(); it != aroot->end(); ++it) {
+			(*it)->Print(0);
+		}
 	} 
 }
 
