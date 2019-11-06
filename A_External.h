@@ -5,8 +5,8 @@
 
 class A_External : public A_Top {
 private:
-	A_Prototype&	prototype;
+	A_Prototype*	prototype;
 public:
-	A_External(A_Prototype& proto) : prototype(proto) {}
+	A_External(A_Prototype* proto) : prototype(proto) {}
 	virtual void Print(int d);
 };

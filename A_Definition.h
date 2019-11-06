@@ -7,10 +7,10 @@
 // A_Definition - This class represents a function definition itself.
 class A_Definition : public A_Top {
 private:
-	A_Prototype	header;
-	A_Expr		body;
+	A_Prototype*	header;
+	A_Expr*			body;
 public:
-	A_Definition(const A_Prototype& h, const A_Expr& b) : header(h), body(b) {}
+	A_Definition(A_Prototype* h, A_Expr* b) : header(h), body(b) {}
 	virtual void Print(int d);
 };
 

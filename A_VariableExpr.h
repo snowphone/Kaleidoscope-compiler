@@ -9,9 +9,9 @@ using std::string;
 // A_VariableExpr - Expr class for referencing a variable, like "a".
 class A_VariableExpr : public A_Expr {
 private:
-	A_Identifier id;
+	A_Identifier* id;
 public:
-	A_VariableExpr(const string& id) : id(id) {}
+	A_VariableExpr(A_Identifier* id) : id(id) {}
 	virtual void Print(int d);
 };
 

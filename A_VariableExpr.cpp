@@ -9,6 +9,6 @@ void A_VariableExpr::Print(int d)
 {
 	indent(d);
 	cout << "variableExpr" << endl;
-	id.Print(d+2);
+	id->Print(d+2);
 }
 

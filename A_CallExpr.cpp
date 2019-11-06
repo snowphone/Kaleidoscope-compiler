@@ -7,18 +7,19 @@ using std::cout;	using std::endl;
 
 void A_CallExpr::Print(int d)
 {
-	int size = arguments.size();
+	int size = arguments->size();
 
 	indent(d);
 	cout << "callExpr" << endl;
 
 	indent(d+2);
-	cout << "funcName" << '\t' << this->funcName << endl;
+	cout << "funcName" << endl;
+	funcName->Print(d + 2);
 	
 	indent(d+2);
 	cout << "expressionList" << endl;
-	for(int i = 0; i < size; i++) {
-		A_Expr& e = *(dynamic_cast<A_Expr*>(arguments.at(i)));
-		e.Print(d+4);
+	for(A_TopList::iterator it = arguments->begin(); it != arguments->end(); ++it) {
+		A_Expr* e = dynamic_cast<A_Expr*>(*it);
+		e->Print(d+4);
 	}
 }

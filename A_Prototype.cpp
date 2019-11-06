@@ -8,12 +8,12 @@ void A_Prototype::Print(int d)
 {
 	indent(d);
 	cout << "prototype" << endl;
-	ident.Print(d+2);
+	ident->Print(d+2);
 
-	if(!paramList.empty()){
+	if(!paramList->empty()){
 		indent(d+2);
 		cout << "identifierList" << endl;
-		for(A_TopList::iterator it = paramList.begin(); it != paramList.end(); ++it) {
+		for(A_TopList::iterator it = paramList->begin(); it != paramList->end(); ++it) {
 			A_Top* a = dynamic_cast<A_Top*>(*it);
 			a->Print(d+4);
 		}

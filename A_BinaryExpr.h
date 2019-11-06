@@ -6,10 +6,10 @@
 class A_BinaryExpr : public A_Expr {
 private:
 	char	oper;
-	A_Expr&	left;
-	A_Expr& right;
+	A_Expr*	left;
+	A_Expr* right;
 
 public:
-	A_BinaryExpr(char op, A_Expr& lhs, A_Expr& rhs) : oper(op), left(lhs), right(rhs) {}
+	A_BinaryExpr(char op, A_Expr* lhs, A_Expr* rhs) : oper(op), left(lhs), right(rhs) {}
 	virtual void Print(int d);
 };

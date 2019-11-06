@@ -10,8 +10,8 @@ void A_Definition::Print(int d)
 	cout << "definition" << endl;
 
 	indent(d + 2);
-	this->header.Print(d + 2);
+	this->header->Print(d + 2);
 
 	indent(d+2);
-	this->body.Print(d + 2);
+	this->body->Print(d + 2);
 }
