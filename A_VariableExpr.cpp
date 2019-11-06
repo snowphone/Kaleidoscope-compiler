@@ -1,10 +1,14 @@
-#include <typeinfo>
 #include "A_VariableExpr.h"
+#include <typeinfo>
+#include <iostream>
+
+using std::cout;	using std::endl;
+
 
 void A_VariableExpr::Print(int d)
 {
 	indent(d);
-	cout<<"variableExpr"<<endl;
-	ident.Print(d+2);
+	cout << "variableExpr" << endl;
+	id.Print(d+2);
 }
 
