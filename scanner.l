@@ -7,6 +7,16 @@ number		[+-]?("."?[0-9]+|[0-9]+"."[0-9]*)
 comment		"#".*
 %{
 int lines = 1;
+#include "A_Top.h"
+#include "A_Definition.h"
+#include "A_Prototype.h"
+#include "A_Identifier.h"
+#include "A_External.h"
+#include "A_NumberExpr.h"
+#include "A_VariableExpr.h"
+#include "A_BinaryExpr.h"
+#include "A_CallExpr.h"
+
 #include "y.tab.h"
 %}
 %%
