@@ -7,6 +7,8 @@ number		[+-]?("."?[0-9]+|[0-9]+"."[0-9]*)
 comment		"#".*
 %{
 int lines = 1;
+#include <string>
+
 #include "A_Top.h"
 #include "A_Definition.h"
 #include "A_Prototype.h"
@@ -23,8 +25,8 @@ int lines = 1;
 \n				++lines;
 def 			return DEF;
 extern 			return EXTERN;
-{id}			return ID;
-{number}		return NUMBER;
+{id}			{ yylval.id = yytext; return ID; }
+{number}		{ yylval.num = atof(yytext); return NUMBER;}
 {comment}		/* Comment */
 "+"				return '+';
 "-"				return '-';
