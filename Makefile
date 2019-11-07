@@ -3,12 +3,13 @@ SCANNER_SRC=scanner.l
 TARGET=parser
 OBJS=$(patsubst %.cpp, %.o, $(wildcard *.cpp))
 CXX=clang++
+FLAGS= -std=c++03 -g -ferror-limit=1
 
 %.o : %.cpp
-	$(CXX) -c $^
+	$(CXX) $(FLAGS) -c $^
 
 $(TARGET) : y.tab.c lex.yy.c $(OBJS)
-	$(CXX) -ferror-limit=1 $^ -ly -ll -o $@
+	$(CXX) $(FLAGS) $^ -ly -ll -o $@
 
 y.tab.c : $(PARSER_SRC)
 	yacc -d $^
