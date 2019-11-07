@@ -117,7 +117,6 @@ external : EXTERN prototype	{ $$ = new A_External($2); }
 int main(void) {
 	int result = yyparse();
 	if(result == 0) {
-		puts("PASS!");
 		typedef A_TopList::iterator Iter;
 		for(Iter it = aroot->begin(); it != aroot->end(); ++it) {
 			(*it)->Print(0);
