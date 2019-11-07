@@ -9,3 +9,7 @@ void A_External::Print(int d)
 	indent(d);
 	cout << "external" << endl;
 }
+
+A_External::~A_External() {
+	delete this->prototype;
+}

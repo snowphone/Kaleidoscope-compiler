@@ -12,3 +12,6 @@ void A_VariableExpr::Print(int d)
 	id->Print(d+2);
 }
 
+A_VariableExpr::~A_VariableExpr() {
+	delete this->id;
+}

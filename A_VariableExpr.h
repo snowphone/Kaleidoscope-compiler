@@ -13,5 +13,6 @@ private:
 public:
 	A_VariableExpr(A_Identifier* id) : id(id) {}
 	virtual void Print(int d);
+	virtual ~A_VariableExpr();
 };
 

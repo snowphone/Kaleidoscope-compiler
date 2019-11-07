@@ -12,5 +12,6 @@ private:
 public:
 	A_Definition(A_Prototype* h, A_Expr* b) : header(h), body(b) {}
 	virtual void Print(int d);
+	virtual ~A_Definition();
 };
 

@@ -14,3 +14,7 @@ void A_BinaryExpr::Print(int d)
 
 }
 
+A_BinaryExpr::~A_BinaryExpr() {
+	delete this->left;
+	delete this->right;
+}

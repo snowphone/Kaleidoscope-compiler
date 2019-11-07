@@ -9,4 +9,5 @@ private:
 public:
 	A_External(A_Prototype* proto) : prototype(proto) {}
 	virtual void Print(int d);
+	virtual ~A_External();
 };

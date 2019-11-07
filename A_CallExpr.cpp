@@ -23,3 +23,11 @@ void A_CallExpr::Print(int d)
 		e->Print(d+4);
 	}
 }
+
+A_CallExpr::~A_CallExpr() {
+	delete this->funcName;
+	for(A_TopList::iterator it = arguments->begin(); it != arguments->end(); ++it) {
+		delete *it;
+	}
+	delete this->arguments;
+}

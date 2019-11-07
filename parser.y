@@ -118,9 +118,16 @@ int main(void) {
 	int result = yyparse();
 	if(result == 0) {
 		puts("PASS!");
-		for(A_TopList::iterator it = aroot->begin(); it != aroot->end(); ++it) {
+		typedef A_TopList::iterator Iter;
+		for(Iter it = aroot->begin(); it != aroot->end(); ++it) {
 			(*it)->Print(0);
 		}
+
+		/* Free memory */
+		for(Iter it = aroot->begin(); it != aroot->end(); ++it) {
+			delete *it;
+		}
+		delete aroot;
 	} 
 }
 

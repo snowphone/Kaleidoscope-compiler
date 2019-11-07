@@ -20,3 +20,10 @@ void A_Prototype::Print(int d)
 	}
 }
 
+A_Prototype::~A_Prototype() {
+	delete this->ident;
+	for(A_TopList::iterator it = paramList->begin(); it != paramList->end(); ++it) {
+		delete *it;
+	}
+	delete this->paramList;
+}
