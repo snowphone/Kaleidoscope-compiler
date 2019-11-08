@@ -8,6 +8,8 @@ void A_External::Print(int d)
 {
 	indent(d);
 	cout << "external" << endl;
+
+	this->prototype->Print(d + 2);
 }
 
 A_External::~A_External() {
