@@ -15,8 +15,6 @@ extern int lines;
 #include "A_BinaryExpr.h"
 #include "A_CallExpr.h"
 
-#include "y.tab.h"
-
 using std::cerr;	using std::endl;
 using std::vector;
 

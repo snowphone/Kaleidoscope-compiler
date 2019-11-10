@@ -7,8 +7,6 @@ using std::cout;	using std::endl;
 
 void A_CallExpr::Print(int d)
 {
-	int size = arguments->size();
-
 	indent(d);
 	cout << "callExpr" << endl;
 

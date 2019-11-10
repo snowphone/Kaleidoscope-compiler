@@ -3,13 +3,19 @@ SCANNER_SRC=scanner.l
 TARGET=parser
 OBJS=$(patsubst %.cpp, %.o, $(wildcard *.cpp))
 CXX=clang++
-FLAGS= -std=c++03 -g -ferror-limit=1
+FLAGS= -std=c++03 -g -ferror-limit=1 -Wall -Wno-write-strings
 
-%.o : %.cpp
-	$(CXX) $(FLAGS) -c $^
-
-$(TARGET) : y.tab.c lex.yy.c $(OBJS)
+$(TARGET) : $(OBJS) y.tab.o lex.yy.o 
 	$(CXX) $(FLAGS) $^ -ly -ll -o $@
+
+scanner: lex.yy.c y.tab.h
+	cc -DENABLE_SCANNER_MAIN $< -ll -o $@
+
+y.tab.o : y.tab.c 
+	$(CXX) $(FLAGS) -c -x c++ $<
+
+lex.yy.o : lex.yy.c y.tab.h
+	$(CXX) $(FLAGS) -c -x c++ -Wno-unused-function $<
 
 y.tab.c : $(PARSER_SRC)
 	yacc -d $^
@@ -17,8 +23,8 @@ y.tab.c : $(PARSER_SRC)
 y.tab.h : $(PARSER_SRC)
 	yacc -d $^
 
-scanner: lex.yy.c y.tab.h
-	cc -DENABLE_SCANNER_MAIN $< -ll -o $@
+%.o : %.cpp
+	$(CXX) $(FLAGS) -c $^
 
 lex.yy.c : $(SCANNER_SRC)
 	lex $^
