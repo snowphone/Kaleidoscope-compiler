@@ -11,6 +11,6 @@ private:
 
 public:
 	A_BinaryExpr(char op, A_Expr* lhs, A_Expr* rhs) : oper(op), left(lhs), right(rhs) {}
-	virtual void Print(int d);
-	virtual ~A_BinaryExpr();
+	virtual void Print(int d) override;
+	virtual ~A_BinaryExpr() override;
 };

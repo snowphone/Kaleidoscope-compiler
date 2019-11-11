@@ -12,7 +12,7 @@ private:
 	A_Identifier* id;
 public:
 	A_VariableExpr(A_Identifier* id) : id(id) {}
-	virtual void Print(int d);
-	virtual ~A_VariableExpr();
+	virtual void Print(int d) override;
+	virtual ~A_VariableExpr() override;
 };
 

@@ -8,5 +8,5 @@ private:
 	double val;
 public:
 	A_NumberExpr(double v) : val(v) {}
-	virtual void Print(int d);
+	virtual void Print(int d) override;
 };

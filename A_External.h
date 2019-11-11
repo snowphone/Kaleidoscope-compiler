@@ -8,6 +8,6 @@ private:
 	A_Prototype*	prototype;
 public:
 	A_External(A_Prototype* proto) : prototype(proto) {}
-	virtual void Print(int d);
-	virtual ~A_External();
+	virtual void Print(int d) override;
+	virtual ~A_External() override;
 };

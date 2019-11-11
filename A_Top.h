@@ -14,6 +14,6 @@ class A_Top {
 public:
 	virtual ~A_Top() {}
 	void indent(int d);				// 각 노드의 깊이를 지정해준다.
-	virtual void Print(int d) {}	// 노드를 출력한다.
+	virtual void Print(int d)=0;	// 노드를 출력한다.
 };
 
