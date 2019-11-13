@@ -1,0 +1,8 @@
+*.o
+ex/
+parser.cpp
+parser.h
+parser.hpp
+scanner.cpp
+parser
+scanner
