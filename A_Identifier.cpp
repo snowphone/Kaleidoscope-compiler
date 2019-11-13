@@ -9,3 +9,7 @@ void A_Identifier::Print(int d)
 	indent(d);
 	cout << "identifier: " << name << endl;
 }
+
+string A_Identifier::GetName() {
+	return this->name;
+}

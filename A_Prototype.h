@@ -11,6 +11,7 @@ private:
 	A_TopList*		paramList;
 public:
 	A_Prototype(A_Identifier* id, A_TopList* il = new A_TopList()) : ident(id), paramList(il) {}
-	virtual void Print(int d) override;
-	virtual ~A_Prototype() override;
+	virtual void Print(int d) ;
+	virtual ~A_Prototype() ;
+	string GetName();
 };

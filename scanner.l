@@ -19,7 +19,9 @@ int lines = 1;
 #include "A_BinaryExpr.h"
 #include "A_CallExpr.h"
 
-#include "y.tab.h"
+#include "parser.h"
+
+extern "C" int yywrap(void) { return 1; }
 %}
 %%
 \n				++lines;

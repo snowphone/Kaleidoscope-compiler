@@ -15,7 +15,7 @@ void A_Prototype::Print(int d)
 		cout << "identifierList" << endl;
 		for(A_TopList::iterator it = paramList->begin(); it != paramList->end(); ++it) {
 			A_Top* a = dynamic_cast<A_Top*>(*it);
-			a->Print(d+4);
+			a->Print(d+2 + 2);
 		}
 	}
 }
@@ -26,4 +26,8 @@ A_Prototype::~A_Prototype() {
 		delete *it;
 	}
 	delete this->paramList;
+}
+
+string A_Prototype::GetName() {
+	return this->ident->GetName();
 }

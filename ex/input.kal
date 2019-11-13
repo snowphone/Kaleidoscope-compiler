@@ -1,0 +1,14 @@
+def add(x, y)
+	x + y;
+
+def subtract(alpha,beta)
+	alpha-beta;
+subtract(1.141592 + 2, -2);
+
+3.14 + 
+0234 - 
+.123 *
+109876543. ;
+def fn()
+	wow + add(google, naver);
+extern add(x,y);

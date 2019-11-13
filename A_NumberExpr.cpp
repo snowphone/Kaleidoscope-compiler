@@ -7,6 +7,6 @@ using std::cout;	using std::endl;
 void A_NumberExpr::Print(int d)
 {
 	indent(d);
-	cout << "numberExpr: " << val << endl;
+	cout << std::fixed << "numberExpr: " << val << endl;
 }
 

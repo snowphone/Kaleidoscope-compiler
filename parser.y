@@ -22,6 +22,7 @@ using std::vector;
 int yylex(void);
 void yyerror(char* s) {
 	cerr << "FAIL!" << endl << "ERROR: " << lines << " - " << s << endl;
+	exit(1);
 }
 
 %}
@@ -33,22 +34,22 @@ void yyerror(char* s) {
 	A_Definition* def;
 	A_Identifier* ident;
 	A_TopList* toplist;
-	A_Top* tp;
+	A_Top* top;
 	A_Prototype* proto;
-	A_Expr* exp;
+	A_Expr* expr;
 }
 
 
 %token COMMENT EXTERN DEF '(' ')' ',' ';'
 %token <num> NUMBER 
 %token <id> ID 
+%type <expr> expression numberExpr variableExpr binaryExpr callExpr
+%type <toplist> topList identifierList expressionList
 %type <ident> identifier
 %type <def> definition
 %type <ext> external
-%type <exp> expression numberExpr variableExpr binaryExpr callExpr
-%type <toplist> topList identifierList expressionList
 %type <proto> prototype
-%type <tp> top
+%type <top> top 
 
 %token END 0
 %left '+' '-'
@@ -111,20 +112,4 @@ expressionList : expression						{ $$ = new A_TopList(1, $1); }
 external : EXTERN prototype	{ $$ = new A_External($2); }
 		;
 %%
-
-int main(void) {
-	int result = yyparse();
-	if(result == 0) {
-		using Iter = A_TopList::iterator;
-		for(Iter it = aroot->begin(); it != aroot->end(); ++it) {
-			(*it)->Print(0);
-		}
-
-		/* Free memory */
-		for(Iter it = aroot->begin(); it != aroot->end(); ++it) {
-			delete *it;
-		}
-		delete aroot;
-	} 
-}
 

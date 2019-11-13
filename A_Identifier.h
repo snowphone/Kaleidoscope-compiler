@@ -10,5 +10,6 @@ private:
 	string name;
 public:
 	A_Identifier(const string& n) : name(n) {}
-	virtual void Print(int d) override;
+	virtual void Print(int d) ;
+	string GetName();
 };
