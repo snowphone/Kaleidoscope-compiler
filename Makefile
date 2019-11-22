@@ -1,12 +1,15 @@
 PARSER_SRC=parser.y
 SCANNER_SRC=scanner.l
 TARGET=parser
-OBJS=$(patsubst %.cpp, %.o, $(wildcard *.cpp))
+OBJS:=$(patsubst %.cpp, %.o, $(wildcard *.cpp))
 CXX=clang++
-FLAGS= -std=c++03 -g -ferror-limit=1 -Wall -Wno-write-strings
+FLAGS= -g -ferror-limit=1 -Wall $$(llvm-config --cxxflags) -Wno-write-strings -DNEW_CLANG 
+LDFLAGS:=$$(llvm-config --ldflags --libs)
 
-$(TARGET) : $(OBJS) parser.o scanner.o 
-	$(CXX) $(FLAGS) $^ -o $@
+VERSION=$$(clang --version | grep -Po '\d\.\d\.\d' )
+
+$(TARGET) : $(OBJS) parser.o scanner.o main.o
+	$(CXX) -o $@ $^ $(LDFLAGS) 
 
 scanner: scanner.cpp parser.h
 	cc -DENABLE_SCANNER_MAIN $< -ll -o $@

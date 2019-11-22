@@ -1,8 +1,14 @@
 #pragma once
 
 #include "A_Top.h"
+
 #include "A_Identifier.h"
+
 #include <vector>
+
+#include <llvm/IR/Function.h>
+
+using llvm::Function;
 
 // A_Prototype - This class represents the "prototype" for a function,
 class A_Prototype : public A_Top {
@@ -14,4 +20,5 @@ public:
 	virtual void Print(int d) ;
 	virtual ~A_Prototype() ;
 	string GetName();
+	Function* Codegen();
 };

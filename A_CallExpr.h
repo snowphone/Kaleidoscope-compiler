@@ -14,6 +14,7 @@ private:
 	A_TopList*		arguments;
 public:
 	A_CallExpr(A_Identifier* f, A_TopList* args = new A_TopList()) : funcName(f), arguments(args) {}
-	virtual void Print(int d) ;
-	virtual ~A_CallExpr() ;
+	virtual void Print(int d);
+	virtual ~A_CallExpr();
+	virtual Value* Codegen();
 };

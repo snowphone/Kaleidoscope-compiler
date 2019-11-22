@@ -1,3 +1,4 @@
+#include <cstdio>
 #include <iostream>
 #include <vector>
 #include <string>
@@ -12,6 +13,9 @@
 #include "A_BinaryExpr.h"
 #include "A_CallExpr.h"
 
+#include <llvm/IR/Module.h>
+#include <llvm/Support/raw_ostream.h>
+
 using std::cerr;	using std::endl;
 using std::vector;	using std::cout;
 
@@ -20,14 +24,16 @@ void StartParse(const char* path);
 
 extern FILE* yyin;
 
-int main(int argc, const char** argv) {
+int main(int argc, const char* argv[]) {
 
 	if(argc != 2) {
-		fprintf(stderr, "usage: %s <filename>\n", argv[0]);
+		cerr << "Usage: " << argv[0] << " <filename>\n" << endl;
 		exit(1);
 	}
 
+	TheModule = new llvm::Module(argv[1], getGlobalContext());
 	StartParse(argv[1]);
+	TheModule->print(llvm::outs(), NULL);
 
 	return 0;
 } 

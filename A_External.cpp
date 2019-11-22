@@ -1,8 +1,12 @@
 #include "A_External.h"
+
 #include <typeinfo>
 #include <iostream>
 
+#include <llvm/IR/Function.h>
+
 using std::cout;	using std::endl;
+using llvm::Function;
 
 void A_External::Print(int d)
 {
@@ -14,4 +18,8 @@ void A_External::Print(int d)
 
 A_External::~A_External() {
 	delete this->prototype;
+}
+
+Function* A_External::Codegen() {
+	return this->prototype->Codegen();
 }

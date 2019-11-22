@@ -1,12 +1,16 @@
 #include "A_CallExpr.h"
+
 #include <typeinfo>
 #include <iostream>
 #include <string>
 
-using std::cout;	using std::endl;
+#include <llvm/IR/Module.h>
+#include <llvm/IR/Function.h>
 
-void A_CallExpr::Print(int d)
-{
+using std::cout;	using std::endl;
+using llvm::Function;
+
+void A_CallExpr::Print(int d) {
 	indent(d);
 	cout << "callExpr" << endl;
 
@@ -26,4 +30,29 @@ A_CallExpr::~A_CallExpr() {
 		delete *it;
 	}
 	delete this->arguments;
+}
+
+Value* A_CallExpr::Codegen() {
+	using llvm::Function;
+
+	Function* callee = TheModule->getFunction(funcName->GetName());
+	if(!callee) {
+		std::cout << "Calling undefined function named '" << funcName->GetName() << "'!" << endl;
+		return NULL;
+	}
+
+	if(callee->arg_size() != arguments->size()) {
+		return NULL;
+	}
+
+	std::vector<Value*> argv;
+	for(A_TopList::iterator it = arguments->begin(); it != arguments->end(); ++it) {
+		Value* v = (*it)->Codegen();
+		if(v)
+			argv.push_back(v);
+		else
+			return NULL;
+	}
+
+	return Builder.CreateCall(callee, argv, funcName->GetName());
 }

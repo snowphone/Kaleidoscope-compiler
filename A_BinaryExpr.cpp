@@ -18,3 +18,22 @@ A_BinaryExpr::~A_BinaryExpr() {
 	delete this->left;
 	delete this->right;
 }
+
+llvm::Value* A_BinaryExpr::Codegen() {
+	Value *lhs = left->Codegen(),
+		  *rhs = right->Codegen();
+
+	if(!lhs || !rhs)
+		return NULL;
+
+	switch(oper) {
+		case '+':
+			return Builder.CreateFAdd(lhs, rhs, "add");
+		case '-':
+			return Builder.CreateFSub(lhs, rhs, "subtract");
+		case '*':
+			return Builder.CreateFMul(lhs, rhs, "multiply");
+		default:
+			return NULL;
+	}
+}

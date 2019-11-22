@@ -1,11 +1,20 @@
 #include "A_Prototype.h"
+
+#include "A_Identifier.h"
+
 #include <typeinfo>
 #include <iostream>
+#include <vector>
+
+#include <llvm/IR/Module.h>
+#include <llvm/IR/Type.h>
+#include <llvm/IR/DerivedTypes.h>
 
 using std::cout;	using std::endl;
+using std::vector;	using llvm::Function;
+using llvm::Type;	using llvm::FunctionType;
 
-void A_Prototype::Print(int d)
-{
+void A_Prototype::Print(int d) {
 	indent(d);
 	cout << "prototype" << endl;
 	ident->Print(d+2);
@@ -31,3 +40,20 @@ A_Prototype::~A_Prototype() {
 string A_Prototype::GetName() {
 	return this->ident->GetName();
 }
+
+Function* A_Prototype::Codegen() {
+	// Assume Kaleidoscope only handles double type
+	vector<Type*> arg_types(paramList->size(), Type::getDoubleTy(getGlobalContext()));
+	FunctionType* ft = FunctionType::get(Type::getDoubleTy(getGlobalContext()), arg_types, false);
+	Function* f = Function::Create(ft, Function::ExternalLinkage, GetName(), TheModule);
+
+	Function::arg_iterator fit = f->arg_begin();
+	A_TopList::iterator ait = paramList->begin();
+
+	for(; fit != f->arg_end(); ++fit, ++ait) {
+		string name = dynamic_cast<A_Identifier*>(*ait)->GetName();
+		fit->setName(name);
+	}
+	return f;
+}
+

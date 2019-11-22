@@ -1,8 +1,16 @@
 #include "A_Definition.h"
+
 #include <typeinfo>
 #include <iostream>
+#include <vector>
+
+#include <llvm/IR/Module.h>
+#include <llvm/IR/Function.h>
+#include <llvm/IR/BasicBlock.h>
 
 using std::cout;	using std::endl;
+using std::vector;	using llvm::Function;
+using llvm::BasicBlock;
 
 void A_Definition::Print(int d)
 {
@@ -17,4 +25,36 @@ void A_Definition::Print(int d)
 A_Definition::~A_Definition() {
 	delete this->header;
 	delete this->body;
+}
+
+Function* A_Definition::Codegen() {
+	// Check for previous 'extern' declaration
+	Function* function = TheModule->getFunction(header->GetName());
+
+	if(!function)
+		function = header->Codegen();
+
+	if(!function || !function->empty())
+		return NULL;
+
+
+	// Create a block
+	BasicBlock* bb = BasicBlock::Create(getGlobalContext(), header->GetName() + "_entry", function);
+	Builder.SetInsertPoint(bb);
+
+	// Record the function arguments in the NamedValues map.
+	NamedValues.clear();
+
+	for(Function::arg_iterator it = function->arg_begin(); it != function->arg_end(); ++it) {
+		NamedValues[it->getName()] = &*it;
+	}
+	Value* ret = body->Codegen();
+	if(ret) {
+		Builder.CreateRet(ret);
+		return function;
+	} else {
+		// Error
+		function->eraseFromParent();
+		return NULL;
+	}
 }
