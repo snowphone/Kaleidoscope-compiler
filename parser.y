@@ -54,6 +54,7 @@ void yyerror(char* s) {
 %token END 0
 %left '+' '-'
 %left '*'
+%right UMINUS
 %start program
 %%
 
@@ -91,6 +92,7 @@ expression : numberExpr			{ $$ = $1; }
 		;
 
 numberExpr : NUMBER	{ $$ = new A_NumberExpr($1); }
+		   | '-' NUMBER { $$ = new A_NumberExpr(-$2); }
 		;
 
 variableExpr : identifier	{ $$ = new A_VariableExpr($1); }
