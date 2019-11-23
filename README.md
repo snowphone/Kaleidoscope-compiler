@@ -21,6 +21,7 @@ A compiler for the Kaleidoscope language. Written in C++ with lex/yacc and gener
   * if-then
   * if-then-else
   * if-elif-else
+* Loop structure
 * Variables
   * Global 
   * Local
