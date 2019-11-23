@@ -34,6 +34,6 @@ llvm::Value* A_BinaryExpr::Codegen() {
 		case '*':
 			return Builder.CreateFMul(lhs, rhs, "multiply");
 		default:
-			return NULL;
+			return LogErrorV("Invalid binary operator");
 	}
 }

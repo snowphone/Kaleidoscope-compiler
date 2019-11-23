@@ -7,8 +7,8 @@
 #include <llvm/IR/Module.h>
 #include <llvm/IR/Function.h>
 
-using std::cout;	using std::endl;
-using llvm::Function;
+using std::cout;		using std::endl;
+using std::to_string;	using llvm::Function;
 
 void A_CallExpr::Print(int d) {
 	indent(d);
@@ -37,12 +37,11 @@ Value* A_CallExpr::Codegen() {
 
 	Function* callee = TheModule->getFunction(funcName->GetName());
 	if(!callee) {
-		std::cout << "Calling undefined function named '" << funcName->GetName() << "'!" << endl;
-		return NULL;
+		return LogErrorV("Calling undefined function named '" + funcName->GetName() + "'!");
 	}
 
 	if(callee->arg_size() != arguments->size()) {
-		return NULL;
+		return LogErrorV("Expected " + to_string(callee->arg_size()) + ", actual: " + to_string(arguments->size()));
 	}
 
 	std::vector<Value*> argv;

@@ -13,6 +13,7 @@
 #include <llvm/IR/LLVMContext.h>
 
 using std::cerr;	using std::endl;
+using std::string;
 
 llvm::LLVMContext& getGlobalContext() {
 	static llvm::LLVMContext TheContext;
@@ -28,7 +29,7 @@ A_TopList *aroot = NULL;
 extern int yyparse(void);
 extern FILE* yyin;
 
-Value* LogErrorV(const char* reason) {
+Value* LogErrorV(const string& reason) {
 	cerr << "Error: " << reason << endl;
 	return NULL;
 }

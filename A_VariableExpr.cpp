@@ -20,5 +20,5 @@ A_VariableExpr::~A_VariableExpr() {
 Value* A_VariableExpr::Codegen() {
 	// Assume identifier is already binded in NamedValues
 	Value* v = NamedValues[this->id->GetName()];
-	return v ? v : NULL;
+	return v ? v : LogErrorV("Unknown variable name '" + this->id->GetName() + "'");
 }

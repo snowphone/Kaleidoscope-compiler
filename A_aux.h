@@ -26,7 +26,7 @@ extern map<string, Value*> NamedValues;
 
 extern A_TopList *aroot;
 
-Value* LogErrorV(const char* reason);
+Value* LogErrorV(const string& reason);
 
 void generate(A_Top* top);
 void StartParse(const char* path);
