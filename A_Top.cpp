@@ -4,6 +4,11 @@
 #include <iostream>
 #include <string>
 
+#include <llvm/IR/Value.h>
+#include <llvm/IR/Module.h>
+#include <llvm/IR/IRBuilder.h>
+#include <llvm/IR/LLVMContext.h>
+
 #ifdef NEW_CLANG
 llvm::LLVMContext& getGlobalContext() {
 	static llvm::LLVMContext TheContext;
@@ -13,6 +18,7 @@ llvm::LLVMContext& getGlobalContext() {
 
 llvm::IRBuilder<> Builder(getGlobalContext());
 map<string, Value*> NamedValues = map<string, Value*>();
+Module* TheModule = NULL;
 
 A_TopList *aroot = NULL;
 
