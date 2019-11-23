@@ -3,7 +3,7 @@ SCANNER_SRC=scanner.l
 TARGET=parser
 OBJS:=$(patsubst %.cpp, %.o, $(wildcard *.cpp))
 CXX=clang++
-FLAGS= -g -ferror-limit=1 -Wall $$(llvm-config --cxxflags) -Wno-write-strings -DNEW_CLANG 
+FLAGS= -g -ferror-limit=1 -Wall $$(llvm-config --cxxflags) -Wno-write-strings -Wno-unused
 LDFLAGS:=$$(llvm-config --ldflags --libs)
 
 VERSION=$$(clang --version | grep -Po '\d\.\d\.\d' )

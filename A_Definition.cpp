@@ -39,7 +39,7 @@ Function* A_Definition::Codegen() {
 
 
 	// Create a block
-	BasicBlock* bb = BasicBlock::Create(getGlobalContext(), header->GetName() + "_entry", function);
+	BasicBlock* bb = BasicBlock::Create(getGlobalContext(), "entry", function);
 	Builder.SetInsertPoint(bb);
 
 	// Record the function arguments in the NamedValues map.
