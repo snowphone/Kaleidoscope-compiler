@@ -56,3 +56,15 @@ void StartParse(const char* path) {
 	
 	fclose(yyin);
 }
+
+void generate(A_Top* top) {
+	A_Expr* expr = dynamic_cast<A_Expr*>(top);
+	if(expr) {
+		A_Prototype* proto = new A_Prototype(new A_Identifier(""));
+		A_Definition* func = new A_Definition(proto, expr);
+		func->Codegen();
+	} else {
+		top->Codegen();
+	}
+
+}

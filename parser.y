@@ -24,7 +24,7 @@ void yyerror(char* s) {
 	cerr << "FAIL!" << endl << "ERROR: " << lines << " - " << s << endl;
 	exit(1);
 }
-
+void generate(A_Top*);
 %}
 
 %union {
@@ -61,8 +61,8 @@ void yyerror(char* s) {
 program : topList END	{ aroot = $1; }
 		;
 
-topList : top ';'			{ $$ = new A_TopList(1, $1); }
-		| topList top ';'	{ $1->push_back($2); $$ = $1; }
+topList : top ';'			{ generate($1); $$ = new A_TopList(1, $1); }
+		| topList top ';'	{ generate($2); $1->push_back($2); $$ = $1; }
 		;
 
 top	: definition	{ $$ = $1; }
