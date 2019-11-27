@@ -53,7 +53,7 @@ void generate(A_Top*);
 
 %token END 0
 %left '+' '-'
-%left '*' '/'
+%left '*' '/' '%'
 %right UMINUS
 %start program
 %%
@@ -102,6 +102,7 @@ binaryExpr : expression '+' expression	{ $$ = new A_BinaryExpr('+', $1, $3); }
 		|  expression '-' expression	{ $$ = new A_BinaryExpr('-', $1, $3); }
 		|  expression '*' expression	{ $$ = new A_BinaryExpr('*', $1, $3); }
 		|  expression '/' expression	{ $$ = new A_BinaryExpr('/', $1, $3); }
+		|  expression '%' expression	{ $$ = new A_BinaryExpr('%', $1, $3); }
 		;
 
 callExpr : identifier '(' ')'				{ $$ = new A_CallExpr($1); }
