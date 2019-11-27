@@ -33,6 +33,8 @@ llvm::Value* A_BinaryExpr::Codegen() {
 			return Builder.CreateFSub(lhs, rhs, "subtract");
 		case '*':
 			return Builder.CreateFMul(lhs, rhs, "multiply");
+		case '/':
+			return Builder.CreateFDiv(lhs, rhs, "divide");
 		default:
 			return LogErrorV("Invalid binary operator");
 	}

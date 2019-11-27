@@ -33,6 +33,7 @@ extern 			return EXTERN;
 "+"				return '+';
 "-"				return '-';
 "*"				return '*';
+"/"				return '/';
 "("				return '(';
 ")"				return ')';
 ","				return ',';

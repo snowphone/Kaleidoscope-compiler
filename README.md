@@ -9,7 +9,7 @@ A compiler for the Kaleidoscope language. Written in C++ with lex/yacc and gener
 ## TODO
 * ~~Identifier: capital letters, underscore~~
 * Arithmetic operators: 
-  * division
+  * ~~division~~
   * mod
   * ~~unary minus~~
 * Relational operators
