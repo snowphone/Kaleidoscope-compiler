@@ -1,9 +1,15 @@
 #include "A_BinaryExpr.h"
+
+#include "A_External.h"
+#include "A_Definition.h"
+
+#include "parser.h"
+
 #include <typeinfo>
 #include <iostream>
 
-using std::cout;
-using std::endl;
+using std::cout; using std::endl;
+using llvm::FunctionType;
 
 void A_BinaryExpr::Print(int d)
 {
@@ -37,6 +43,24 @@ llvm::Value* A_BinaryExpr::Codegen() {
 			return Builder.CreateFDiv(lhs, rhs, "divide");
 		case '%':
 			return Builder.CreateFRem(lhs, rhs, "modulo");
+		case '<':
+			lhs = Builder.CreateFCmpULT(lhs, rhs, "less_than");
+			return Builder.CreateUIToFP(lhs, FunctionType::getDoubleTy(getGlobalContext()), "to_double");
+		case LE:
+			lhs = Builder.CreateFCmpULE(lhs, rhs, "less_than_or_equal");
+			return Builder.CreateUIToFP(lhs, FunctionType::getDoubleTy(getGlobalContext()), "to_double");
+		case '>':
+			lhs = Builder.CreateFCmpUGT(lhs, rhs, "greater_than");
+			return Builder.CreateUIToFP(lhs, FunctionType::getDoubleTy(getGlobalContext()), "to_double");
+		case GE:
+			lhs = Builder.CreateFCmpUGT(lhs, rhs, "greater_than_or_equal");
+			return Builder.CreateUIToFP(lhs, FunctionType::getDoubleTy(getGlobalContext()), "to_double");
+		case EQ:
+			lhs = Builder.CreateFCmpUEQ(lhs, rhs, "equal");
+			return Builder.CreateUIToFP(lhs, FunctionType::getDoubleTy(getGlobalContext()), "to_double");
+		case NE:
+			lhs = Builder.CreateFCmpUNE(lhs, rhs, "not_equal");
+			return Builder.CreateUIToFP(lhs, FunctionType::getDoubleTy(getGlobalContext()), "to_double");
 		default:
 			return LogErrorV("Invalid binary operator");
 	}

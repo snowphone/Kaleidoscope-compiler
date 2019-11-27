@@ -12,7 +12,7 @@ A compiler for the Kaleidoscope language. Written in C++ with lex/yacc and gener
   * ~~division~~
   * ~~mod~~
   * ~~unary minus~~
-* Relational operators
+* ~~Relational operators~~
 * Boolean operators
 * Additional types
   * Integer

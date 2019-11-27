@@ -52,6 +52,8 @@ void generate(A_Top*);
 %type <top> top 
 
 %token END 0
+%left EQ NE
+%left '<' LE '>' GE
 %left '+' '-'
 %left '*' '/' '%'
 %right UMINUS
@@ -103,6 +105,12 @@ binaryExpr : expression '+' expression	{ $$ = new A_BinaryExpr('+', $1, $3); }
 		|  expression '*' expression	{ $$ = new A_BinaryExpr('*', $1, $3); }
 		|  expression '/' expression	{ $$ = new A_BinaryExpr('/', $1, $3); }
 		|  expression '%' expression	{ $$ = new A_BinaryExpr('%', $1, $3); }
+		|  expression '<' expression	{ $$ = new A_BinaryExpr('<', $1, $3); }
+		|  expression LE expression	{ $$ = new A_BinaryExpr(LE, $1, $3); }
+		|  expression '>' expression	{ $$ = new A_BinaryExpr('>', $1, $3); }
+		|  expression GE expression	{ $$ = new A_BinaryExpr(GE, $1, $3); }
+		|  expression EQ expression	{ $$ = new A_BinaryExpr(EQ, $1, $3); }
+		|  expression NE expression	{ $$ = new A_BinaryExpr(NE, $1, $3); }
 		;
 
 callExpr : identifier '(' ')'				{ $$ = new A_CallExpr($1); }

@@ -8,7 +8,7 @@ LDFLAGS:=$$(llvm-config --ldflags --libs)
 
 VERSION=$$(clang --version | grep -Po '\d\.\d\.\d' )
 
-$(TARGET) : $(OBJS) parser.o scanner.o main.o
+$(TARGET) : parser.o scanner.o $(OBJS) main.o
 	$(CXX) -o $@ $^ $(LDFLAGS) 
 
 scanner: scanner.cpp parser.h
