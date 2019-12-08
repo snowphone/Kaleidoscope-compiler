@@ -16,6 +16,7 @@ extern int lines;
 #include "A_CallExpr.h"
 #include "A_CondExpr.h"
 #include "A_AssignExpr.h"
+#include "A_LoopExpr.h"
 
 using std::cerr;	using std::endl;
 using std::vector;
@@ -42,10 +43,11 @@ void generate(A_Top*);
 }
 
 
-%token COMMENT EXTERN DEF '(' ')' ',' ';'
+%token COMMENT EXTERN DEF '(' ')' ',' ';' 
 %token <num> NUMBER 
 %token <id> ID 
 %type <expr> expression numberExpr variableExpr binaryExpr callExpr condExpr assignExpr
+%type <expr> loopExpr
 %type <toplist> topList identifierList expressionList
 %type <ident> identifier
 %type <def> definition
@@ -61,8 +63,7 @@ void generate(A_Top*);
 %left '*' '/' '%'
 %right UMINUS
 
-%token IF THEN
-%token ELSE
+%token IF THEN ELSE FOR IN
 
 %start program
 %%
@@ -100,7 +101,11 @@ expression : numberExpr			{ $$ = $1; }
 		|  '(' expression ')'	{ $$ = $2; }
 		|  condExpr				{ $$ = $1; }
 		|  assignExpr			{ $$ = $1; }
+		|  loopExpr 			{ $$ = $1; }
 		;
+
+loopExpr : FOR identifier '=' expression ',' expression ',' expression IN expression { $$ = new A_LoopExpr($2, $4, $6, $8, $10); }
+		 ;
 
 assignExpr : identifier '=' expression { $$ = new A_AssignExpr($1, $3); }
 		   ;

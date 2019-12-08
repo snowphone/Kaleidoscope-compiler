@@ -20,6 +20,7 @@ int lines = 1;
 #include "A_CallExpr.h"
 #include "A_CondExpr.h"
 #include "A_AssignExpr.h"
+#include "A_LoopExpr.h"
 
 #include "parser.h"
 
@@ -32,6 +33,8 @@ extern "C" int yywrap(void) { return 1; }
 "else"			return ELSE;
 def 			return DEF;
 extern 			return EXTERN;
+for				return FOR;
+in 				return IN;
 {id}			{ yylval.id = yytext; return ID; }
 {number}		{ yylval.num = atof(yytext); return NUMBER;}
 {comment}		/* Comment */
