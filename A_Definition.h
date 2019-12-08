@@ -12,9 +12,9 @@ using llvm::Function;
 class A_Definition : public A_Top {
 private:
 	A_Prototype*	header;
-	A_Expr*			body;
+	A_TopList*			body;
 public:
-	A_Definition(A_Prototype* h, A_Expr* b) : header(h), body(b) {}
+	A_Definition(A_Prototype* h, A_TopList* b) : header(h), body(b) {}
 	virtual void Print(int d);
 	virtual ~A_Definition();
 	Function* Codegen();

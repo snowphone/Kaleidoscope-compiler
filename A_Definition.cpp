@@ -19,7 +19,9 @@ void A_Definition::Print(int d)
 
 	this->header->Print(d + 2);
 
-	this->body->Print(d + 2);
+	for(A_TopList::iterator it = body->begin(); it != body->end(); ++it) {
+		(*it)->Print(d + 2);
+	}
 }
 
 A_Definition::~A_Definition() {
@@ -48,7 +50,12 @@ Function* A_Definition::Codegen() {
 	for(Function::arg_iterator it = function->arg_begin(); it != function->arg_end(); ++it) {
 		NamedValues[it->getName()] = &*it;
 	}
-	Value* ret = body->Codegen();
+
+	for(A_TopList::iterator it = body->begin(); it != body->end() - 1; ++it) {
+		(*it)->Codegen();
+	}
+
+	Value* ret = body->back()->Codegen();
 	if(ret) {
 		Builder.CreateRet(ret);
 		return function;

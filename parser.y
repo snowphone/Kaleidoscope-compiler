@@ -43,7 +43,7 @@ void generate(A_Top*);
 }
 
 
-%token COMMENT EXTERN DEF '(' ')' ',' ';' 
+%token COMMENT EXTERN DEF  ',' ';' 
 %token <num> NUMBER 
 %token <id> ID 
 %type <expr> expression numberExpr variableExpr binaryExpr callExpr condExpr assignExpr
@@ -63,7 +63,8 @@ void generate(A_Top*);
 %left '*' '/' '%'
 %right UMINUS
 
-%token IF THEN ELSE FOR IN
+%token IF THEN FOR IN ELSE
+%token '(' ')'
 
 %start program
 %%
@@ -80,7 +81,7 @@ top	: definition	{ $$ = $1; }
 	| expression	{ $$ = $1; }
 	;
 
-definition : DEF prototype expression	{ $$ = new A_Definition($2, $3); }
+definition : DEF prototype expressionList	{ $$ = new A_Definition($2, $3); }
 		;
 
 prototype : identifier '(' ')'				{ $$ = new A_Prototype($1); }

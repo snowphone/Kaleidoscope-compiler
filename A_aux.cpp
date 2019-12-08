@@ -36,6 +36,10 @@ Value* LogErrorV(const string& reason) {
 
 void StartParse(const char* path) {
 	yyin = fopen(path, "r");
+	if(!yyin) {
+		fprintf(stderr, "Failed to open %s\n", path);
+		exit(1);
+	}
 	yyparse();
 	fclose(yyin);
 }
@@ -53,7 +57,7 @@ void generate(A_Top* top) {
 	A_Expr* expr = dynamic_cast<A_Expr*>(top);
 	if(expr) {
 		A_Prototype* proto = new A_Prototype(new A_Identifier(""));
-		A_Definition* func = new A_Definition(proto, expr);
+		A_Definition* func = new A_Definition(proto, new A_TopList(1, expr));
 		func->Codegen();
 	} else {
 		top->Codegen();
