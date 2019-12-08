@@ -15,6 +15,7 @@ extern int lines;
 #include "A_BinaryExpr.h"
 #include "A_CallExpr.h"
 #include "A_CondExpr.h"
+#include "A_AssignExpr.h"
 
 using std::cerr;	using std::endl;
 using std::vector;
@@ -44,7 +45,7 @@ void generate(A_Top*);
 %token COMMENT EXTERN DEF '(' ')' ',' ';'
 %token <num> NUMBER 
 %token <id> ID 
-%type <expr> expression numberExpr variableExpr binaryExpr callExpr condExpr
+%type <expr> expression numberExpr variableExpr binaryExpr callExpr condExpr assignExpr
 %type <toplist> topList identifierList expressionList
 %type <ident> identifier
 %type <def> definition
@@ -53,6 +54,7 @@ void generate(A_Top*);
 %type <top> top 
 
 %token END 0
+%right '='
 %left EQ NE
 %left '<' LE '>' GE
 %left '+' '-'
@@ -96,8 +98,12 @@ expression : numberExpr			{ $$ = $1; }
 		|  binaryExpr			{ $$ = $1; }
 		|  callExpr				{ $$ = $1; }
 		|  '(' expression ')'	{ $$ = $2; }
-		|	condExpr			{ $$ = $1; }
+		|  condExpr				{ $$ = $1; }
+		|  assignExpr			{ $$ = $1; }
 		;
+
+assignExpr : identifier '=' expression { $$ = new A_AssignExpr($1, $3); }
+		   ;
 
 numberExpr : NUMBER	{ $$ = new A_NumberExpr($1); }
 		   | '-' NUMBER { $$ = new A_NumberExpr(-$2); }
@@ -121,9 +127,10 @@ binaryExpr : expression '+' expression	{ $$ = new A_BinaryExpr('+', $1, $3); }
 
 callExpr : identifier '(' ')'				{ $$ = new A_CallExpr($1); }
 		| identifier '(' expressionList ')'	{ $$ = new A_CallExpr($1, $3); }
+		;
 
 condExpr: IF expression THEN	expression	{ $$ = new A_CondExpr($2, $4); }
-			   | IF expression THEN	expression ELSE expression	{ $$ = new A_CondExpr($2, $4, $6); }
+		| IF expression THEN	expression ELSE expression	{ $$ = new A_CondExpr($2, $4, $6); }
 		;
 
 expressionList : expression						{ $$ = new A_TopList(1, $1); }

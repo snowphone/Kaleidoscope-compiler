@@ -19,6 +19,7 @@ int lines = 1;
 #include "A_BinaryExpr.h"
 #include "A_CallExpr.h"
 #include "A_CondExpr.h"
+#include "A_AssignExpr.h"
 
 #include "parser.h"
 
@@ -41,6 +42,7 @@ extern 			return EXTERN;
 "%"				return '%';
 "<"				return '<';
 ">"				return '>';
+"="				return '=';
 "<="			return LE;
 ">="			return GE;
 "=="			return EQ;
