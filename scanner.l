@@ -18,6 +18,7 @@ int lines = 1;
 #include "A_VariableExpr.h"
 #include "A_BinaryExpr.h"
 #include "A_CallExpr.h"
+#include "A_CondExpr.h"
 
 #include "parser.h"
 
@@ -25,6 +26,9 @@ extern "C" int yywrap(void) { return 1; }
 %}
 %%
 \n				++lines;
+"if"			return IF;
+"then"			return THEN;
+"else"			return ELSE;
 def 			return DEF;
 extern 			return EXTERN;
 {id}			{ yylval.id = yytext; return ID; }
