@@ -13,7 +13,7 @@ A compiler for the Kaleidoscope language. Written in C++ with lex/yacc and gener
   * ~~mod~~     
   * ~~unary minus~~
 * ~~Relational operators~~
-* Boolean operators
+* ~~Logic operators~~
 * Additional types
   * Integer
   * Array
@@ -22,9 +22,7 @@ A compiler for the Kaleidoscope language. Written in C++ with lex/yacc and gener
   * ~~if-then-else~~
   * ~~if-else if-else~~
 * ~~Loop structure~~
-* Variables
-  * Global 
-  * Local
+* ~~Variables~~
 * ~~Assignment~~
 * ~~sequential expression~~
 
@@ -48,6 +46,10 @@ x >= y;
 x == y;
 x != y;
 ~~~
+
+### 논리 연산자
+Kaleidoscope는 논리곱(`&&`), 논리합(`||`), 그리고 부정(`!`) 기호를 제공한다.
+논리곱과 논리합 연산은 short-circuit에 의거하여 평가된다.
 
 ### 함수
 함수는 다음과 같은 형식을 지닌다.

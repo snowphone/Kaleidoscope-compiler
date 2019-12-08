@@ -54,6 +54,9 @@ in 				return IN;
 ")"				return ')';
 ","				return ',';
 ";"				return ';';
+"&&"			return AND;
+"||"			return OR;
+"!"				return '!';
 [ \r\t]			/* White space */
 <<EOF>>			return END;
 %%

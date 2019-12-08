@@ -43,10 +43,11 @@ void generate(A_Top*);
 }
 
 
-%token COMMENT EXTERN DEF  ',' ';' 
+%token COMMENT EXTERN DEF  ';' 
+%left ',' 
 %token <num> NUMBER 
 %token <id> ID 
-%type <expr> expression numberExpr variableExpr binaryExpr callExpr condExpr assignExpr
+%type <expr> expression numberExpr variableExpr binaryExpr callExpr condExpr assignExpr andExpr, orExpr, notExpr
 %type <expr> loopExpr
 %type <toplist> topList identifierList expressionList
 %type <ident> identifier
@@ -57,10 +58,13 @@ void generate(A_Top*);
 
 %token END 0
 %right '='
+%left OR
+%left AND 
 %left EQ NE
 %left '<' LE '>' GE
 %left '+' '-'
 %left '*' '/' '%'
+%left '!'
 %right UMINUS
 
 %token IF THEN FOR IN ELSE
@@ -103,7 +107,29 @@ expression : numberExpr			{ $$ = $1; }
 		|  condExpr				{ $$ = $1; }
 		|  assignExpr			{ $$ = $1; }
 		|  loopExpr 			{ $$ = $1; }
+		|  andExpr 				{ $$ = $1; }
+		|  orExpr 				{ $$ = $1; }
+		|  notExpr 				{ $$ = $1; }
 		;
+
+andExpr : expression AND expression { 
+		$$ = new A_CondExpr( 
+		$1, 
+			new A_CondExpr($3, 
+				new A_NumberExpr(1.),
+				new A_NumberExpr(0.)), 
+		new A_NumberExpr(0.) 
+		); }
+		;
+
+orExpr : expression OR expression {
+	   $$ = new A_CondExpr(
+	   $1, new A_NumberExpr(1.), new A_CondExpr($3, new A_NumberExpr(1.), new A_NumberExpr(0.))
+	   );
+	   }
+	   ;
+
+notExpr : '!' expression { $$ = new A_CondExpr($2, new A_NumberExpr(0.), new A_NumberExpr(1.)); }
 
 loopExpr : FOR identifier '=' expression ',' expression ',' expression IN expression { $$ = new A_LoopExpr($2, $4, $6, $8, $10); }
 		 ;
