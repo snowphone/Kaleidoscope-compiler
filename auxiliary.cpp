@@ -1,8 +1,9 @@
-#include "A_aux.h"
+#include "auxiliary.h"
 
 #include "A_Identifier.h"
 #include "A_Prototype.h"
 #include "A_Definition.h"
+#include "A_CallExpr.h"
 
 #include <string>
 #include <iostream>
@@ -58,7 +59,8 @@ void generate(A_Top* top) {
 	if(expr) {
 		A_Prototype* proto = new A_Prototype(new A_Identifier(""));
 		A_Definition* func = new A_Definition(proto, new A_TopList(1, expr));
-		func->Codegen();
+		Function* f = func->Codegen();
+		std::cerr << "function name: " << f->getName().str() << std::endl;
 	} else {
 		top->Codegen();
 	}

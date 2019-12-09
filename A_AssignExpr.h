@@ -2,7 +2,7 @@
 
 #include "A_Expr.h"
 
-#include "A_aux.h"
+#include "auxiliary.h"
 #include "A_Identifier.h"
 
 class A_AssignExpr: public A_Expr {

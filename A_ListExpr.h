@@ -2,7 +2,7 @@
 
 #include "A_Expr.h"
 
-#include "A_aux.h"
+#include "auxiliary.h"
 
 #include <llvm/IR/Constants.h>
 

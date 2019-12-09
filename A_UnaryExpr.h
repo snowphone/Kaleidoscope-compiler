@@ -1,7 +1,7 @@
 #pragma once
 
 #include "A_Expr.h"
-#include "A_aux.h"
+#include "auxiliary.h"
 
 class A_UnaryExpr: public A_Expr {
 	A_Expr* expr;

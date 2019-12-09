@@ -1,6 +1,6 @@
 #include "A_CondExpr.h"
 
-#include "A_aux.h"
+#include "auxiliary.h"
 
 #include <llvm/IR/Function.h>
 #include <llvm/IR/BasicBlock.h>

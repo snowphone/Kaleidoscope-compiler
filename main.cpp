@@ -12,7 +12,7 @@
 #include "A_VariableExpr.h"
 #include "A_BinaryExpr.h"
 #include "A_CallExpr.h"
-#include "A_aux.h"	// StartParse, free_tree, TheModule, getGlobalContext
+#include "auxiliary.h"	// StartParse, free_tree, TheModule, getGlobalContext
 
 #include <llvm/IR/Module.h>
 #include <llvm/Support/raw_ostream.h>
