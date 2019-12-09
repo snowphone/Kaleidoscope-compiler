@@ -17,6 +17,7 @@ extern int lines;
 #include "A_CondExpr.h"
 #include "A_AssignExpr.h"
 #include "A_LoopExpr.h"
+#include "A_UnaryExpr.h"
 
 using std::cerr;	using std::endl;
 using std::vector;
@@ -47,7 +48,7 @@ void generate(A_Top*);
 %left ',' 
 %token <num> NUMBER 
 %token <id> ID 
-%type <expr> expression numberExpr variableExpr binaryExpr callExpr condExpr assignExpr andExpr, orExpr, notExpr
+%type <expr> expression numberExpr variableExpr binaryExpr callExpr condExpr assignExpr notExpr
 %type <expr> loopExpr
 %type <toplist> topList identifierList expressionList
 %type <ident> identifier
@@ -107,29 +108,10 @@ expression : numberExpr			{ $$ = $1; }
 		|  condExpr				{ $$ = $1; }
 		|  assignExpr			{ $$ = $1; }
 		|  loopExpr 			{ $$ = $1; }
-		|  andExpr 				{ $$ = $1; }
-		|  orExpr 				{ $$ = $1; }
 		|  notExpr 				{ $$ = $1; }
 		;
 
-andExpr : expression AND expression { 
-		$$ = new A_CondExpr( 
-		$1, 
-			new A_CondExpr($3, 
-				new A_NumberExpr(1.),
-				new A_NumberExpr(0.)), 
-		new A_NumberExpr(0.) 
-		); }
-		;
-
-orExpr : expression OR expression {
-	   $$ = new A_CondExpr(
-	   $1, new A_NumberExpr(1.), new A_CondExpr($3, new A_NumberExpr(1.), new A_NumberExpr(0.))
-	   );
-	   }
-	   ;
-
-notExpr : '!' expression { $$ = new A_CondExpr($2, new A_NumberExpr(0.), new A_NumberExpr(1.)); }
+notExpr : '!' expression { $$ = new A_UnaryExpr($2); }
 
 loopExpr : FOR identifier '=' expression ',' expression ',' expression IN expression { $$ = new A_LoopExpr($2, $4, $6, $8, $10); }
 		 ;
@@ -155,6 +137,8 @@ binaryExpr : expression '+' expression	{ $$ = new A_BinaryExpr('+', $1, $3); }
 		|  expression GE expression	{ $$ = new A_BinaryExpr(GE, $1, $3); }
 		|  expression EQ expression	{ $$ = new A_BinaryExpr(EQ, $1, $3); }
 		|  expression NE expression	{ $$ = new A_BinaryExpr(NE, $1, $3); }
+		|  expression AND expression	{ $$ = new A_BinaryExpr(AND, $1, $3); }
+		|  expression OR expression	{ $$ = new A_BinaryExpr(OR, $1, $3); }
 		;
 
 callExpr : identifier '(' ')'				{ $$ = new A_CallExpr($1); }

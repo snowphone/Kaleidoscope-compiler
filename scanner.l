@@ -21,6 +21,7 @@ int lines = 1;
 #include "A_CondExpr.h"
 #include "A_AssignExpr.h"
 #include "A_LoopExpr.h"
+#include "A_UnaryExpr.h"
 
 #include "parser.h"
 

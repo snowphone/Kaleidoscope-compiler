@@ -61,6 +61,12 @@ llvm::Value* A_BinaryExpr::Codegen() {
 		case NE:
 			lhs = Builder.CreateFCmpUNE(lhs, rhs, "not_equal");
 			return Builder.CreateUIToFP(lhs, FunctionType::getDoubleTy(getGlobalContext()), "to_double");
+		case AND:
+			lhs = Builder.CreateAnd(lhs, rhs, "logical_and");
+			return Builder.CreateUIToFP(lhs, FunctionType::getDoubleTy(getGlobalContext()), "to_double");
+		case OR:
+			lhs = Builder.CreateOr(lhs, rhs, "logical_or");
+			return Builder.CreateUIToFP(lhs, FunctionType::getDoubleTy(getGlobalContext()), "to_double");
 		default:
 			return LogErrorV("Invalid binary operator");
 	}
