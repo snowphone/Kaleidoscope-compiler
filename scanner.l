@@ -22,6 +22,7 @@ int lines = 1;
 #include "A_AssignExpr.h"
 #include "A_LoopExpr.h"
 #include "A_UnaryExpr.h"
+#include "A_ListExpr.h"
 
 #include "parser.h"
 
@@ -58,6 +59,8 @@ in 				return IN;
 "&&"			return AND;
 "||"			return OR;
 "!"				return '!';
+"["				return '[';
+"]"				return ']';
 [ \r\t]			/* White space */
 <<EOF>>			return END;
 %%
