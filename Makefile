@@ -2,7 +2,7 @@ PARSER_SRC=parser.y
 SCANNER_SRC=scanner.l
 TARGET=parser
 BUILD_DIR=./build
-_OBJS=$(patsubst %.cpp, %.o, $(wildcard *.cpp)) $(PARSER_SRC:.y=.o) $(SCANNER_SRC:.l=.o)
+_OBJS=$(PARSER_SRC:.y=.o) $(SCANNER_SRC:.l=.o) $(patsubst %.cpp, %.o, $(wildcard *.cpp)) 
 OBJS=$(addprefix $(BUILD_DIR)/, $(_OBJS))
 
 CXX=clang++
@@ -12,11 +12,7 @@ LDFLAGS:=$$(llvm-config --ldflags --libs)
 VERSION=$$(clang --version | grep -Po '\d\.\d\.\d' )
 CPU=$$(lscpu | grep -i 'cpu(s):' | grep -Po '\d+')
 
-$(TARGET): parser.h $(SCANNER_SRC) $(PARSER_SRC)
-	mkdir -p $(BUILD_DIR)
-	make _target_impl -j$(CPU)
-
-_target_impl : $(OBJS)
+$(TARGET): $(OBJS)
 	$(CXX) -o $(TARGET) $^ $(LDFLAGS) 
 
 $(BUILD_DIR)/%.o : %.cpp 
@@ -25,9 +21,9 @@ $(BUILD_DIR)/%.o : %.cpp
 scanner.cpp : $(SCANNER_SRC)
 	lex -o $@ $^
 
-parser.h : $(PARSER_SRC)
+parser.cpp : $(PARSER_SRC)
 	rm -f parser.h
-	yacc -d -o parser.cpp $^
+	yacc -d -o $@ $^
 	rename 's/hpp/h/' *.hpp
 
 .PHONEY: clean
