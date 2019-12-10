@@ -12,7 +12,7 @@ LDFLAGS:=$$(llvm-config --ldflags --libs)
 VERSION=$$(clang --version | grep -Po '\d\.\d\.\d' )
 CPU=$$(lscpu | grep -i 'cpu(s):' | grep -Po '\d+')
 
-$(TARGET): parser.h
+$(TARGET): parser.h $(SCANNER_SRC) $(PARSER_SRC)
 	mkdir -p $(BUILD_DIR)
 	make _target_impl -j$(CPU)
 
@@ -26,6 +26,7 @@ scanner.cpp : $(SCANNER_SRC)
 	lex -o $@ $^
 
 parser.h : $(PARSER_SRC)
+	rm -f parser.h
 	yacc -d -o parser.cpp $^
 	rename 's/hpp/h/' *.hpp
 
