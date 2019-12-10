@@ -86,8 +86,8 @@ void generate(A_Top*);
 program : topList END	{ aroot = $1; }
 		;
 
-topList : top ';'			{ generate($1); $$ = new A_TopList(1, $1); }
-		| topList top ';'	{ generate($2); $1->push_back($2); $$ = $1; }
+topList : top ';'			{ $$ = new A_TopList(1, $1); }
+		| topList top ';'	{ $1->push_back($2); $$ = $1; }
 		;
 
 top	: definition	{ $$ = $1; }
@@ -98,14 +98,17 @@ top	: definition	{ $$ = $1; }
 definition : DEF prototype expressionList	{ $$ = new A_Definition($2, $3); }
 		;
 
-prototype : identifier '(' ')' ':' type				{ $$ = new A_Prototype($1, $5); }
+prototype : identifier '(' ')' 				{ $$ = new A_Prototype($1); }
+		  | identifier '(' ')' ':' type				{ $$ = new A_Prototype($1, $5); }
 		| identifier '(' paramList ')' ':' type	{ $$ = new A_Prototype($1, $6, $3); }
+		| identifier '(' paramList ')' { $$ = new A_Prototype($1, $3); }
 		;
 
 identifier : ID		{ $$ = new A_Identifier(std::string($1)); }
 		;
 
 lvalue : identifier ':' type 		{ $$ = new A_Lvalue($1, $3); }
+lvalue : identifier 				{ $$ = new A_Lvalue($1); }
 	   ;
 
 paramList : lvalue					{ $$ = new A_TopList(1, $1); }

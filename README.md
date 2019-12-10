@@ -35,6 +35,7 @@ Kaleidoscope는 논리곱(`&&`), 논리합(`||`), 그리고 부정(`!`) 기호�
 Kaleidoscope는 원래 double이라는 하나의 타입만을 가지고 있는 언어였지만, 현 버전은 double과 배열 타입을 지원한다.
 타입 선언은 `<identifier> : <type>`으로 표현된다.
 다중 타입 지원에 따라 Kaleidoscope는 정적 타이핑 언어가 되었다.
+단, 기존과의 하위 호환성을 위하여 타입 지정을 하지 아니할 경우, `double`타입으로 간주한다.
 
 ### 배열
 Kaleidoscope에서는 배열 타입을 새로 지원하며, row-major과 0-indexed라는 특징을 가진다.

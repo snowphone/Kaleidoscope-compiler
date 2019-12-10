@@ -21,6 +21,7 @@ private:
 public:
 	A_Prototype(A_Identifier* id, Type* type = Type::getDoubleTy(getGlobalContext()), A_TopList* il = new A_TopList()) 
 		: ident(id), return_type(type), paramList(il) {}
+	A_Prototype(A_Identifier* id, A_TopList* il ) : ident(id), return_type(Type::getDoubleTy(getGlobalContext())), paramList(il) {}
 	virtual void Print(int d);
 	virtual ~A_Prototype();
 	string GetName();

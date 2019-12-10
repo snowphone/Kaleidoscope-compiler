@@ -16,9 +16,15 @@
 
 #include <llvm/IR/Module.h>
 #include <llvm/Support/raw_ostream.h>
+#include <llvm/Support/TargetSelect.h>
+#include <llvm/ExecutionEngine/ExecutionEngine.h>
+
 
 using std::cerr;	using std::endl;
 using std::vector;	using std::cout;
+using std::string;
+using llvm::Module;
+using llvm::EngineBuilder;
 
 int main(int argc, const char* argv[]) {
 
@@ -27,9 +33,26 @@ int main(int argc, const char* argv[]) {
 		exit(1);
 	}
 
-	TheModule = new llvm::Module(argv[1], getGlobalContext());
+	llvm::InitializeNativeTarget();
+	llvm::InitializeNativeTargetAsmPrinter(); 
+	llvm::InitializeNativeTargetAsmParser();
+
+
+	TheModule = new Module("Kaleidoscope Just-in-time Compiler", getGlobalContext());
+	auto uniModule = std::unique_ptr<Module>(TheModule);
+	string err;
+	engine = EngineBuilder(std::move(uniModule))
+		.setErrorStr(&err)
+		.setEngineKind(llvm::EngineKind::JIT)
+		.create();
+
+	if(!engine) {
+		cerr << "Could not create ExecutionEngine: " << err << endl;
+		return 1;
+	}
+
 	StartParse(argv[1]);
-	TheModule->print(llvm::errs(), NULL);
+	compile(aroot);
 
 	free_tree();
 	return 0;
