@@ -7,9 +7,10 @@ Value* A_AssignExpr::Codegen() {
 
 	if(NamedValues[lval->GetName()])
 		return LogErrorV("variable name '" + lval->GetName() + "' can't be assigned twice.");
+	if(this->lval->getType()->getTypeID() != val->getType()->getTypeID()) {
+		return LogErrorV("Type error.");
+	}
 	NamedValues[lval->GetName()] = val;
-
-	//Builder.CreateStore(val, var);
 
 	return val;
 }

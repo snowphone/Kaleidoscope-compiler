@@ -5,6 +5,8 @@ extern int lines;
 #include <vector>
 #include <string>
 
+#include <llvm/IR/Type.h>
+
 #include "A_Top.h"
 #include "A_Definition.h"
 #include "A_Prototype.h"
@@ -19,6 +21,7 @@ extern int lines;
 #include "A_LoopExpr.h"
 #include "A_UnaryExpr.h"
 #include "A_ListExpr.h"
+#include "A_Lvalue.h"
 
 using std::cerr;	using std::endl;
 using std::vector;
@@ -26,7 +29,7 @@ using std::vector;
 
 int yylex(void);
 void yyerror(char* s) {
-	cerr << "FAIL!" << endl << "ERROR: " << lines << " - " << s << endl;
+	cerr << "SCANNER ERROR: " << lines << " - " << s << endl;
 	exit(1);
 }
 void generate(A_Top*);
@@ -38,10 +41,12 @@ void generate(A_Top*);
 	A_External* ext;
 	A_Definition* def;
 	A_Identifier* ident;
+	A_Lvalue* lv;
 	A_TopList* toplist;
 	A_Top* top;
 	A_Prototype* proto;
 	A_Expr* expr;
+	llvm::Type* tp;
 }
 
 
@@ -49,11 +54,13 @@ void generate(A_Top*);
 %left ',' 
 %token <num> NUMBER 
 %token <id> ID 
+%type<tp> type
 %type <expr> expression numberExpr variableExpr binaryExpr callExpr condExpr assignExpr notExpr listExpr
 %type <expr> loopExpr
-%type <toplist> topList identifierList expressionList
+%type <toplist> topList paramList expressionList
 %type <ident> identifier
 %type <def> definition
+%type <lv> lvalue
 %type <ext> external
 %type <proto> prototype
 %type <top> top 
@@ -68,7 +75,7 @@ void generate(A_Top*);
 %left '*' '/' '%'
 %left '!'
 %right UMINUS
-%token '[' ']'
+%token '[' ']' ':' DOUBLE  
 
 %token IF THEN FOR IN ELSE GET_ELEMENT
 %token '(' ')'
@@ -91,16 +98,24 @@ top	: definition	{ $$ = $1; }
 definition : DEF prototype expressionList	{ $$ = new A_Definition($2, $3); }
 		;
 
-prototype : identifier '(' ')'				{ $$ = new A_Prototype($1); }
-		| identifier '(' identifierList ')'	{ $$ = new A_Prototype($1, $3); }
+prototype : identifier '(' ')' ':' type				{ $$ = new A_Prototype($1, $5); }
+		| identifier '(' paramList ')' ':' type	{ $$ = new A_Prototype($1, $6, $3); }
 		;
 
 identifier : ID		{ $$ = new A_Identifier(std::string($1)); }
 		;
 
-identifierList : identifier						{ $$ = new A_TopList(1, $1); }
-			|  identifierList ',' identifier	{ $1->push_back($3); $$ = $1; }
+lvalue : identifier ':' type 		{ $$ = new A_Lvalue($1, $3); }
+	   ;
+
+paramList : lvalue					{ $$ = new A_TopList(1, $1); }
+			|  paramList ',' lvalue	{ $1->push_back($3); $$ = $1; }
 			;
+
+
+type : DOUBLE { $$ = llvm::VectorType::getDoubleTy(getGlobalContext()); }
+	 | '[' type '*' NUMBER ']' { $$ = llvm::VectorType::get($2, (int)$4); }
+	 ;
 
 expression : numberExpr			{ $$ = $1; }
 		|  variableExpr			{ $$ = $1; }
@@ -123,14 +138,14 @@ listExpr : '[' expressionList ']'	{ $$ = new A_ListExpr($2); }
 loopExpr : FOR identifier '=' expression ',' expression ',' expression IN expression { $$ = new A_LoopExpr($2, $4, $6, $8, $10); }
 		 ;
 
-assignExpr : identifier '=' expression { $$ = new A_AssignExpr($1, $3); }
+assignExpr : lvalue '=' expression { $$ = new A_AssignExpr($1, $3); }
 		   ;
 
 numberExpr : NUMBER	{ $$ = new A_NumberExpr($1); }
 		   | '-' NUMBER { $$ = new A_NumberExpr(-$2); }
 		;
 
-variableExpr : identifier	{ $$ = new A_VariableExpr($1); }
+variableExpr : identifier			{ $$ = new A_VariableExpr($1); }
 			;
 
 binaryExpr : expression '+' expression	{ $$ = new A_BinaryExpr('+', $1, $3); }
@@ -139,13 +154,13 @@ binaryExpr : expression '+' expression	{ $$ = new A_BinaryExpr('+', $1, $3); }
 		|  expression '/' expression	{ $$ = new A_BinaryExpr('/', $1, $3); }
 		|  expression '%' expression	{ $$ = new A_BinaryExpr('%', $1, $3); }
 		|  expression '<' expression	{ $$ = new A_BinaryExpr('<', $1, $3); }
-		|  expression LE expression	{ $$ = new A_BinaryExpr(LE, $1, $3); }
+		|  expression LE expression		{ $$ = new A_BinaryExpr(LE, $1, $3); }
 		|  expression '>' expression	{ $$ = new A_BinaryExpr('>', $1, $3); }
-		|  expression GE expression	{ $$ = new A_BinaryExpr(GE, $1, $3); }
-		|  expression EQ expression	{ $$ = new A_BinaryExpr(EQ, $1, $3); }
-		|  expression NE expression	{ $$ = new A_BinaryExpr(NE, $1, $3); }
+		|  expression GE expression		{ $$ = new A_BinaryExpr(GE, $1, $3); }
+		|  expression EQ expression		{ $$ = new A_BinaryExpr(EQ, $1, $3); }
+		|  expression NE expression		{ $$ = new A_BinaryExpr(NE, $1, $3); }
 		|  expression AND expression	{ $$ = new A_BinaryExpr(AND, $1, $3); }
-		|  expression OR expression	{ $$ = new A_BinaryExpr(OR, $1, $3); }
+		|  expression OR expression		{ $$ = new A_BinaryExpr(OR, $1, $3); }
 		;
 
 callExpr : identifier '(' ')'				{ $$ = new A_CallExpr($1); }

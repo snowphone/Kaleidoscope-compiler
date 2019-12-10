@@ -2,6 +2,7 @@
 
 #include "A_External.h"
 #include "A_Definition.h"
+#include "A_Lvalue.h"
 
 #include "parser.h"
 

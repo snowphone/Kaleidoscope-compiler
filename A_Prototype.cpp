@@ -1,6 +1,7 @@
 #include "A_Prototype.h"
 
 #include "A_Identifier.h"
+#include "A_Lvalue.h"
 
 #include <typeinfo>
 #include <iostream>
@@ -41,17 +42,23 @@ string A_Prototype::GetName() {
 	return this->ident->GetName();
 }
 
+
 Function* A_Prototype::Codegen() {
 	// Assume Kaleidoscope only handles double type
-	vector<Type*> arg_types(paramList->size(), Type::getDoubleTy(getGlobalContext()));
-	FunctionType* ft = FunctionType::get(Type::getDoubleTy(getGlobalContext()), arg_types, false);
+	vector<Type*> arg_types;
+	for(A_TopList::iterator it = paramList->begin(); it != paramList->end(); ++it) {
+		Type* type = static_cast<A_Lvalue*>(*it)->getType();
+		arg_types.push_back(type);
+	}
+
+	FunctionType* ft = FunctionType::get(this->return_type, arg_types, false);
 	Function* f = Function::Create(ft, Function::ExternalLinkage, GetName(), TheModule);
 
 	Function::arg_iterator fit = f->arg_begin();
 	A_TopList::iterator ait = paramList->begin();
 
 	for(; fit != f->arg_end(); ++fit, ++ait) {
-		string name = dynamic_cast<A_Identifier*>(*ait)->GetName();
+		string name = dynamic_cast<A_Lvalue*>(*ait)->GetName();
 		fit->setName(name);
 	}
 	return f;

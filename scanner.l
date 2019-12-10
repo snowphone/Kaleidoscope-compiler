@@ -23,6 +23,7 @@ int lines = 1;
 #include "A_LoopExpr.h"
 #include "A_UnaryExpr.h"
 #include "A_ListExpr.h"
+#include "A_Lvalue.h"
 
 #include "parser.h"
 
@@ -33,6 +34,7 @@ extern "C" int yywrap(void) { return 1; }
 "if"			return IF;
 "then"			return THEN;
 "else"			return ELSE;
+double			return DOUBLE;
 def 			return DEF;
 extern 			return EXTERN;
 for				return FOR;
@@ -61,6 +63,7 @@ in 				return IN;
 "!"				return '!';
 "["				return '[';
 "]"				return ']';
+":"				return ':';
 [ \r\t]			/* White space */
 <<EOF>>			return END;
 %%
