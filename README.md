@@ -45,7 +45,6 @@ Kaleidoscope에서는 배열 타입을 새로 지원하며, row-major과 0-index
 ~~~
 matrix: [[double * 2] * 3] = [[1, 2], [3, 4], 5, 6]];
 ~~~
-
 ### 대입문
 Vanilla kaleidoscope가 함수 parameter만을 이용하여 변수를 선언할 수 있었던 것과 달리 본 컴파일러는 함수 body 내부에서의 변수 선언을 허용한다. 
 지원하는 타입의 수가 늘어남에 따라 정적 타이핑 언어로 언어의 특성이 변경되었다.
