@@ -107,7 +107,7 @@ prototype : identifier '(' ')' 				{ $$ = new A_Prototype($1); }
 identifier : ID		{ $$ = new A_Identifier(std::string($1)); }
 		;
 
-lvalue : identifier ':' type 		{ $$ = new A_Lvalue($1, $3); }
+lvalue : type identifier  		{ $$ = new A_Lvalue($2, $1); }
 lvalue : identifier 				{ $$ = new A_Lvalue($1); }
 	   ;
 
