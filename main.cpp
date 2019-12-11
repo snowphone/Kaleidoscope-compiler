@@ -39,9 +39,8 @@ int main(int argc, const char* argv[]) {
 
 
 	TheModule = new Module("Kaleidoscope Just-in-time Compiler", getGlobalContext());
-	auto uniModule = std::unique_ptr<Module>(TheModule);
 	string err;
-	engine = EngineBuilder(std::move(uniModule))
+	engine = EngineBuilder(PASS(TheModule))
 		.setErrorStr(&err)
 		.setEngineKind(llvm::EngineKind::JIT)
 		.create();

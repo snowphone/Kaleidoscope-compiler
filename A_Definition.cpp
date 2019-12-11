@@ -31,12 +31,13 @@ A_Definition::~A_Definition() {
 
 Function* A_Definition::Codegen() {
 	// Check for previous 'extern' declaration
-	Function* function = TheModule->getFunction(header->GetName());
+	functionProtos[header->GetName()] = header;
+	Function* function = getFunction(header->GetName());
 
 	if(!function)
 		function = header->Codegen();
 
-	if(!function || !function->empty())
+	if(!function) 
 		return NULL;
 
 
@@ -45,7 +46,8 @@ Function* A_Definition::Codegen() {
 	Builder.SetInsertPoint(bb);
 
 	// Record the function arguments in the NamedValues map.
-	NamedValues.clear();
+	map<string, Value*> backup;
+	std::copy(NamedValues.begin(), NamedValues.end(), std::inserter(backup, backup.end()));
 
 	for(Function::arg_iterator it = function->arg_begin(); it != function->arg_end(); ++it) {
 		NamedValues[it->getName()] = &*it;
@@ -56,6 +58,13 @@ Function* A_Definition::Codegen() {
 	}
 
 	Value* ret = body->back()->Codegen();
+
+	// If the function is not global
+	if(!header->GetName().empty()) {
+		NamedValues.clear();
+		std::copy(backup.begin(), backup.end(), std::inserter(NamedValues, NamedValues.end()));
+	}
+
 	if(ret) {
 		Builder.CreateRet(ret);
 		return function;

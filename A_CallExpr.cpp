@@ -35,7 +35,7 @@ A_CallExpr::~A_CallExpr() {
 Value* A_CallExpr::Codegen() {
 	using llvm::Function;
 
-	Function* callee = TheModule->getFunction(funcName->GetName());
+	Function* callee = getFunction(funcName->GetName());
 	if(!callee) {
 		return LogErrorV("Calling undefined function named '" + funcName->GetName() + "'!");
 	}
