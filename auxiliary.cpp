@@ -8,16 +8,15 @@
 
 #include <string>
 #include <iostream>
+#include <cstdio>
 
 #include <llvm/IR/Value.h>
 #include <llvm/IR/Module.h>
 #include <llvm/IR/IRBuilder.h>
 #include <llvm/IR/LLVMContext.h>
-#include <llvm/IR/Verifier.h>
 
 using std::cerr;	using std::endl;
 using std::string;
-using llvm::verifyFunction;
 
 llvm::LLVMContext& getGlobalContext() {
 	static llvm::LLVMContext TheContext;
@@ -36,6 +35,12 @@ extern FILE* yyin;
 Value* LogErrorV(const string& reason) {
 	cerr << "Error: " << reason << endl;
 	return NULL;
+}
+
+string to_string(long long i) {
+	char buf[128];
+	sprintf(buf, "%lld", i);
+	return buf;
 }
 
 void StartParse(const char* path) {
@@ -67,9 +72,12 @@ void compile(A_TopList* tops) {
 		} else {
 			f = static_cast<Function*>((*it)->Codegen());
 		}
-		verifyFunction(*f);
 	}
+#if __clang_major__ == 3
+	TheModule->dump();
+#else
 	TheModule->print(llvm::errs(), NULL);
+#endif
 	double (*fp)() = (double (*)())engine->getFunctionAddress(anon_func);
 	cerr << string(15, '-') << endl
 		<< "Evaluated to " << fp() << endl

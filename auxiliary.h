@@ -31,6 +31,7 @@ extern A_TopList *aroot;
 
 Value* LogErrorV(const string& reason);
 
+string to_string(long long i);
 void StartParse(const char* path);
 void free_tree();
 void generate(A_Top* top);

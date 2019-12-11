@@ -8,7 +8,7 @@
 #include <llvm/IR/Function.h>
 
 using std::cout;		using std::endl;
-using std::to_string;	using llvm::Function;
+using llvm::Function;
 
 void A_CallExpr::Print(int d) {
 	indent(d);
