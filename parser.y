@@ -75,7 +75,7 @@ void generate(A_Top*);
 %left '*' '/' '%'
 %left '!'
 %right UMINUS
-%token '[' ']' ':' DOUBLE_TY  INT_TY
+%token '[' ']' DOUBLE_TY  INT_TY
 
 %token IF THEN FOR IN ELSE 
 %token '(' ')'
@@ -99,8 +99,8 @@ definition : DEF prototype expressionList	{ $$ = new A_Definition($2, $3); }
 		;
 
 prototype : identifier '(' ')' 				{ $$ = new A_Prototype($1); }
-		  | identifier '(' ')' ':' type				{ $$ = new A_Prototype($1, $5); }
-		| identifier '(' paramList ')' ':' type	{ $$ = new A_Prototype($1, $6, $3); }
+		  | identifier '(' ')' '-' '>' type				{ $$ = new A_Prototype($1, $6); }
+		| identifier '(' paramList ')' '-' '>' type	{ $$ = new A_Prototype($1, $7, $3); }
 		| identifier '(' paramList ')' { $$ = new A_Prototype($1, $3); }
 		;
 
