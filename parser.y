@@ -116,8 +116,9 @@ paramList : lvalue					{ $$ = new A_TopList(1, $1); }
 			;
 
 
-type : DOUBLE_TY { $$ = llvm::VectorType::getDoubleTy(getGlobalContext()); }
+type : DOUBLE_TY { $$ = llvm::Type::getDoubleTy(getGlobalContext()); }
 	 | type '[' NUMBER ']' { $$ = llvm::VectorType::get($1, (int)$3); }
+	 | INT_TY { $$ = llvm::Type::getInt64Ty(getGlobalContext()); }
 	 ;
 
 expression : numberExpr			{ $$ = $1; }
