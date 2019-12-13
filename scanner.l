@@ -41,7 +41,15 @@ extern 			return EXTERN;
 for				return FOR;
 in 				return IN;
 {id}			{ yylval.id = yytext; return ID; }
-{number}		{ yylval.num = atof(yytext); return NUMBER;}
+{number}		{ 
+					if(strstr(yytext, ".")) {
+						yylval.num = atof(yytext); 
+						return NUMBER;
+					} else {
+						yylval.integer = atoll(yytext); 
+						return INTEGER;
+					}
+				}
 {comment}		/* Comment */
 "+"				return '+';
 "-"				return '-';

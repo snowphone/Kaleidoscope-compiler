@@ -22,6 +22,7 @@ extern int lines;
 #include "A_UnaryExpr.h"
 #include "A_ListExpr.h"
 #include "A_Lvalue.h"
+#include "A_IntExpr.h"
 
 using std::cerr;	using std::endl;
 using std::vector;
@@ -37,6 +38,7 @@ void generate(A_Top*);
 
 %union {
 	double num;
+	long long integer;
 	const char* id;
 	A_External* ext;
 	A_Definition* def;
@@ -53,9 +55,10 @@ void generate(A_Top*);
 %token COMMENT EXTERN DEF  ';' 
 %left ',' 
 %token <num> NUMBER 
+%token <integer> INTEGER;
 %token <id> ID 
 %type<tp> type
-%type <expr> expression numberExpr variableExpr binaryExpr callExpr condExpr assignExpr notExpr listExpr
+%type <expr> expression numberExpr variableExpr binaryExpr callExpr condExpr assignExpr notExpr listExpr intExpr
 %type <expr> loopExpr
 %type <toplist> topList paramList expressionList
 %type <ident> identifier
@@ -117,11 +120,13 @@ paramList : lvalue					{ $$ = new A_TopList(1, $1); }
 
 
 type : DOUBLE_TY { $$ = llvm::Type::getDoubleTy(getGlobalContext()); }
-	 | type '[' NUMBER ']' { $$ = llvm::VectorType::get($1, (int)$3); }
+	 | type '[' NUMBER ']' { $$ = llvm::VectorType::get($1, (long long)$3); }
+	 | type '[' INTEGER ']' { $$ = llvm::VectorType::get($1, $3); }
 	 | INT_TY { $$ = llvm::Type::getInt64Ty(getGlobalContext()); }
 	 ;
 
 expression : numberExpr			{ $$ = $1; }
+		|  intExpr 				{ $$ = $1; }
 		|  variableExpr			{ $$ = $1; }
 		|  binaryExpr			{ $$ = $1; }
 		|  callExpr				{ $$ = $1; }
@@ -147,6 +152,10 @@ assignExpr : lvalue '=' expression { $$ = new A_AssignExpr($1, $3); }
 
 numberExpr : NUMBER	{ $$ = new A_NumberExpr($1); }
 		   | '-' NUMBER { $$ = new A_NumberExpr(-$2); }
+		;
+
+intExpr : INTEGER	{ $$ = new A_IntExpr($1); }
+		   | '-' INTEGER { $$ = new A_IntExpr(-$2); }
 		;
 
 variableExpr : identifier			{ $$ = new A_VariableExpr($1); }
