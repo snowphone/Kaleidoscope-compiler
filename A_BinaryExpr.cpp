@@ -26,48 +26,59 @@ A_BinaryExpr::~A_BinaryExpr() {
 	delete this->right;
 }
 
+static Value* intToDouble(Value* v) {
+	return Builder.CreateUIToFP(v, FunctionType::getDoubleTy(getGlobalContext()), "to_double");
+}
+
 llvm::Value* A_BinaryExpr::Codegen() {
 	Value *lhs = left->Codegen(),
 		  *rhs = right->Codegen();
 
+	if(lhs->getType()->isVectorTy() || rhs->getType()->isVectorTy())
+		return LogErrorV("A_BinaryExpr: List type is not supported");
 	if(!lhs || !rhs)
 		return NULL;
 
+	if(lhs->getType()->getTypeID() != rhs->getType()->getTypeID()) {
+		// Promote int to double
+		if(lhs->getType()->isIntegerTy())
+			lhs = Builder.CreateSIToFP(lhs, Type::getDoubleTy(getGlobalContext()));
+		if(rhs->getType()->isIntegerTy())
+			rhs = Builder.CreateSIToFP(rhs, Type::getDoubleTy(getGlobalContext()));
+	}
+
+#define CALC(OP, L, R) L->getType()->isIntegerTy() ? Builder.Create ## OP(L, R, #OP) : Builder.CreateF ## OP(L, R, #OP);
+#define CALCS(OP, L, R) L->getType()->isIntegerTy() ? Builder.CreateS ## OP(L, R, #OP) : Builder.CreateF ## OP(L, R, #OP);
+#define CALCIU(OP, L, R) L->getType()->isIntegerTy() ? Builder.CreateICmpU ## OP(L, R, #OP) : Builder.CreateFCmpU ## OP(L, R, #OP);
+#define CALCI(OP, L, R) L->getType()->isIntegerTy() ? Builder.CreateICmp ## OP(L, R, #OP) : Builder.CreateFCmpU ## OP(L, R, #OP);
+
 	switch(oper) {
 		case '+':
-			return Builder.CreateFAdd(lhs, rhs, "add");
+			return CALC(Add, lhs, rhs);
 		case '-':
-			return Builder.CreateFSub(lhs, rhs, "subtract");
+			return CALC(Sub, lhs, rhs);
 		case '*':
-			return Builder.CreateFMul(lhs, rhs, "multiply");
+			return CALC(Mul, lhs, rhs);
 		case '/':
-			return Builder.CreateFDiv(lhs, rhs, "divide");
+			return CALCS(Div, lhs, rhs);
 		case '%':
-			return Builder.CreateFRem(lhs, rhs, "modulo");
+			return CALCS(Rem, lhs, rhs);
 		case '<':
-			lhs = Builder.CreateFCmpULT(lhs, rhs, "less_than");
-			return Builder.CreateUIToFP(lhs, FunctionType::getDoubleTy(getGlobalContext()), "to_double");
+			return CALCIU(LT, lhs, rhs);
 		case LE:
-			lhs = Builder.CreateFCmpULE(lhs, rhs, "less_than_or_equal");
-			return Builder.CreateUIToFP(lhs, FunctionType::getDoubleTy(getGlobalContext()), "to_double");
+			return CALCIU(LT, lhs, rhs);
 		case '>':
-			lhs = Builder.CreateFCmpUGT(lhs, rhs, "greater_than");
-			return Builder.CreateUIToFP(lhs, FunctionType::getDoubleTy(getGlobalContext()), "to_double");
+			return CALCIU(GT, lhs, rhs);
 		case GE:
-			lhs = Builder.CreateFCmpUGT(lhs, rhs, "greater_than_or_equal");
-			return Builder.CreateUIToFP(lhs, FunctionType::getDoubleTy(getGlobalContext()), "to_double");
+			return CALCIU(GE, lhs, rhs);
 		case EQ:
-			lhs = Builder.CreateFCmpUEQ(lhs, rhs, "equal");
-			return Builder.CreateUIToFP(lhs, FunctionType::getDoubleTy(getGlobalContext()), "to_double");
+			return CALCI(EQ, lhs, rhs);
 		case NE:
-			lhs = Builder.CreateFCmpUNE(lhs, rhs, "not_equal");
-			return Builder.CreateUIToFP(lhs, FunctionType::getDoubleTy(getGlobalContext()), "to_double");
+			return CALCI(NE, lhs, rhs);
 		case AND:
-			lhs = Builder.CreateAnd(lhs, rhs, "logical_and");
-			return Builder.CreateUIToFP(lhs, FunctionType::getDoubleTy(getGlobalContext()), "to_double");
+			return Builder.CreateAnd(lhs, rhs);
 		case OR:
-			lhs = Builder.CreateOr(lhs, rhs, "logical_or");
-			return Builder.CreateUIToFP(lhs, FunctionType::getDoubleTy(getGlobalContext()), "to_double");
+			return Builder.CreateOr(lhs, rhs);
 		default:
 			return LogErrorV("Invalid binary operator");
 	}
