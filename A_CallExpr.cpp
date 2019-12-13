@@ -4,6 +4,8 @@
 #include <iostream>
 #include <string>
 
+#include "A_ListExpr.h"
+
 #include <llvm/IR/Module.h>
 #include <llvm/IR/Function.h>
 
@@ -34,6 +36,9 @@ A_CallExpr::~A_CallExpr() {
 
 Value* A_CallExpr::Codegen() {
 	using llvm::Function;
+
+	if(funcName->GetName() == "get_element")
+		return A_ListExpr::get_element((A_ListExpr*) arguments->front(), (A_Expr*) arguments->back());
 
 	Function* callee = getFunction(funcName->GetName());
 	if(!callee) {

@@ -77,7 +77,7 @@ void generate(A_Top*);
 %right UMINUS
 %token '[' ']' ':' DOUBLE  
 
-%token IF THEN FOR IN ELSE GET_ELEMENT
+%token IF THEN FOR IN ELSE 
 %token '(' ')'
 
 %start program
