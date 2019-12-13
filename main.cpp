@@ -15,9 +15,12 @@
 #include "auxiliary.h"	// StartParse, free_tree, TheModule, getGlobalContext
 
 #include <llvm/IR/Module.h>
-#include <llvm/Support/raw_ostream.h>
-#include <llvm/Support/TargetSelect.h>
-#include <llvm/ExecutionEngine/ExecutionEngine.h>
+
+#ifdef __enable_jit__
+ #include <llvm/Support/raw_ostream.h>
+ #include <llvm/Support/TargetSelect.h>
+ #include <llvm/ExecutionEngine/ExecutionEngine.h>
+#endif
 
 
 using std::cerr;	using std::endl;
@@ -33,12 +36,15 @@ int main(int argc, const char* argv[]) {
 		exit(1);
 	}
 
+#ifdef __enable_jit__
 	llvm::InitializeNativeTarget();
 	llvm::InitializeNativeTargetAsmPrinter(); 
 	llvm::InitializeNativeTargetAsmParser();
+#endif
 
 
-	TheModule = new Module("Kaleidoscope Just-in-time Compiler", getGlobalContext());
+	TheModule = new Module(argv[1], getGlobalContext());
+#ifdef __enable_jit__
 	string err;
 	engine = EngineBuilder(PASS(TheModule))
 		.setErrorStr(&err)
@@ -49,6 +55,7 @@ int main(int argc, const char* argv[]) {
 		cerr << "Could not create ExecutionEngine: " << err << endl;
 		return 1;
 	}
+#endif
 
 	StartParse(argv[1]);
 	compile(aroot);

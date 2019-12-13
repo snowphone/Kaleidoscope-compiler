@@ -67,6 +67,7 @@ void free_tree() {
 }
 
 static void dump() {
+#ifdef __enable_jit__
 	static bool isFirst = true;
 	string buf;
 	llvm::raw_string_ostream os(buf);
@@ -88,6 +89,11 @@ static void dump() {
 	}
 	isFirst = false;
 	std::cerr << buf << endl;
+#elif __clang_major__ == 3
+	TheModule->dump();
+#else
+	TheModule->print(llvm::errs(), NULL);
+#endif
 }
 
 Function* getFunction(string name) {
@@ -107,12 +113,13 @@ void compile(A_TopList* tops) {
 			A_Prototype* proto = new A_Prototype(new A_Identifier(anon_func));
 			A_Definition* func = new A_Definition(proto, new A_TopList(1, e));
 			f = func->Codegen();
+
+#ifdef __enable_jit__
 			dump();
 
 			Module* oldModule = TheModule;
 			engine->addModule(PASS(TheModule));
 
-			//double (*fp)() = (double (*)())engine->getFunctionAddress(anon_func);
 			GenericValue val = engine->runFunction(f, ArrayRef<GenericValue>());
 			const int length = 80;
 			cerr << string(length, '-') << endl
@@ -122,11 +129,17 @@ void compile(A_TopList* tops) {
 			engine->removeModule(oldModule);
 			TheModule = new Module("Kaleidoscope Just-in-time Compiler", getGlobalContext());
 			TheModule->setDataLayout(engine->getTargetMachine()->createDataLayout());
+#endif
 
 		} else {
 			Value* v = (*it)->Codegen();
 			f = static_cast<Function*>(v);
+#ifdef __enable_jit__
 			dump();
+#endif
 		}
 	}
+#ifndef __enable_jit__
+	dump();
+#endif
 }

@@ -46,7 +46,7 @@ Value* A_CallExpr::Codegen() {
 	}
 
 	if(callee->arg_size() != arguments->size()) {
-		return LogErrorV("Expected " + to_string(callee->arg_size()) + ", actual: " + to_string(arguments->size()));
+		return LogErrorV("A_CallExpr::Codegen: Expected # of arguements " + to_string(callee->arg_size()) + ", actual: " + to_string(arguments->size()));
 	}
 
 	std::vector<Value*> argv;
