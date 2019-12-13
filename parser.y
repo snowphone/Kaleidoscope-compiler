@@ -75,7 +75,7 @@ void generate(A_Top*);
 %left '*' '/' '%'
 %left '!'
 %right UMINUS
-%token '[' ']' ':' DOUBLE  
+%token '[' ']' ':' DOUBLE_TY  INT_TY
 
 %token IF THEN FOR IN ELSE 
 %token '(' ')'
@@ -116,7 +116,7 @@ paramList : lvalue					{ $$ = new A_TopList(1, $1); }
 			;
 
 
-type : DOUBLE { $$ = llvm::VectorType::getDoubleTy(getGlobalContext()); }
+type : DOUBLE_TY { $$ = llvm::VectorType::getDoubleTy(getGlobalContext()); }
 	 | '[' type '*' NUMBER ']' { $$ = llvm::VectorType::get($2, (int)$4); }
 	 ;
 

@@ -34,7 +34,8 @@ extern "C" int yywrap(void) { return 1; }
 "if"			return IF;
 "then"			return THEN;
 "else"			return ELSE;
-double			return DOUBLE;
+double			return DOUBLE_TY;
+int 			//return INT_TY;
 def 			return DEF;
 extern 			return EXTERN;
 for				return FOR;
