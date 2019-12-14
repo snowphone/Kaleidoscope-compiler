@@ -5,7 +5,7 @@
 #include <string>
 #include <map>
 
-#include "A_aux.h"	// A_TopList, Module, IRBuilder, and auxilary functions here
+#include "auxiliary.h"	// A_TopList, Module, IRBuilder, and auxilary functions here
 
 class A_Top {
 public:

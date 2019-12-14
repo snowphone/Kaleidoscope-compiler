@@ -4,11 +4,13 @@
 #include <iostream>
 #include <string>
 
+#include "A_ListExpr.h"
+
 #include <llvm/IR/Module.h>
 #include <llvm/IR/Function.h>
 
 using std::cout;		using std::endl;
-using std::to_string;	using llvm::Function;
+using llvm::Function;
 
 void A_CallExpr::Print(int d) {
 	indent(d);
@@ -35,13 +37,16 @@ A_CallExpr::~A_CallExpr() {
 Value* A_CallExpr::Codegen() {
 	using llvm::Function;
 
-	Function* callee = TheModule->getFunction(funcName->GetName());
+	if(funcName->GetName() == "get_element")
+		return A_ListExpr::get_element((A_ListExpr*) arguments->front(), (A_Expr*) arguments->back());
+
+	Function* callee = getFunction(funcName->GetName());
 	if(!callee) {
 		return LogErrorV("Calling undefined function named '" + funcName->GetName() + "'!");
 	}
 
 	if(callee->arg_size() != arguments->size()) {
-		return LogErrorV("Expected " + to_string(callee->arg_size()) + ", actual: " + to_string(arguments->size()));
+		return LogErrorV("A_CallExpr::Codegen: Expected # of arguements " + to_string(callee->arg_size()) + ", actual: " + to_string(arguments->size()));
 	}
 
 	std::vector<Value*> argv;

@@ -2,7 +2,7 @@
  * ID: 		B611062
  */
 /* Rules */
-id			[a-z][a-z0-9]*
+id			[a-zA-Z_][a-zA-Z0-9_]*
 number		("."?[0-9]+|[0-9]+"."[0-9]*)
 comment		"#".*
 %{
@@ -18,6 +18,12 @@ int lines = 1;
 #include "A_VariableExpr.h"
 #include "A_BinaryExpr.h"
 #include "A_CallExpr.h"
+#include "A_CondExpr.h"
+#include "A_AssignExpr.h"
+#include "A_LoopExpr.h"
+#include "A_UnaryExpr.h"
+#include "A_ListExpr.h"
+#include "A_Lvalue.h"
 
 #include "parser.h"
 
@@ -25,18 +31,48 @@ extern "C" int yywrap(void) { return 1; }
 %}
 %%
 \n				++lines;
+"if"			return IF;
+"then"			return THEN;
+"else"			return ELSE;
+double			return DOUBLE_TY;
+int 			return INT_TY;
 def 			return DEF;
 extern 			return EXTERN;
+for				return FOR;
+in 				return IN;
 {id}			{ yylval.id = yytext; return ID; }
-{number}		{ yylval.num = atof(yytext); return NUMBER;}
+{number}		{ 
+					if(strstr(yytext, ".")) {
+						yylval.num = atof(yytext); 
+						return NUMBER;
+					} else {
+						yylval.integer = atoll(yytext); 
+						return INTEGER;
+					}
+				}
 {comment}		/* Comment */
 "+"				return '+';
 "-"				return '-';
 "*"				return '*';
+"/"				return '/';
+"%"				return '%';
+"<"				return '<';
+">"				return '>';
+"="				return '=';
+"<="			return LE;
+">="			return GE;
+"=="			return EQ;
+"!="			return NE;
 "("				return '(';
 ")"				return ')';
 ","				return ',';
 ";"				return ';';
+"&&"			return AND;
+"||"			return OR;
+"!"				return '!';
+"["				return '[';
+"]"				return ']';
+":"				return ':';
 [ \r\t]			/* White space */
 <<EOF>>			return END;
 %%

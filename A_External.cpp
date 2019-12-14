@@ -21,5 +21,6 @@ A_External::~A_External() {
 }
 
 Function* A_External::Codegen() {
+	functionProtos[prototype->GetName()] = prototype;
 	return this->prototype->Codegen();
 }
