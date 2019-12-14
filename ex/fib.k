@@ -1,4 +1,4 @@
-def fib(double x)
+def fib(int x) -> int
 	if x < 3 then
 		1
 	else
